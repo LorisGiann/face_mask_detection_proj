@@ -200,6 +200,10 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
 
             for (final Detector.Recognition result : results) {
               final RectF location = result.getLocation();
+
+              //FILTER CLASSES
+              //result.getTitle().equalsIgnoreCase("without_mask"))
+
               if (location != null && result.getConfidence() >= minimumConfidence) {
                 canvas.drawRect(location, paint);
 
