@@ -4,8 +4,8 @@
 4
 5    <uses-sdk
 6        android:minSdkVersion="21"
-6-->C:\Users\loris\Desktop\android\lib_task_api\src\main\AndroidManifest.xml
+6-->/home/davide/Scrivania/test_mask/face_mask_detection_proj-main/android/lib_task_api/src/main/AndroidManifest.xml
 7        android:targetSdkVersion="30" />
-7-->C:\Users\loris\Desktop\android\lib_task_api\src\main\AndroidManifest.xml
+7-->/home/davide/Scrivania/test_mask/face_mask_detection_proj-main/android/lib_task_api/src/main/AndroidManifest.xml
 8
 9</manifest>
