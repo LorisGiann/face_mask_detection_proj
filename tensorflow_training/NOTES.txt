@@ -1,0 +1,100 @@
+ ----------------- INSTALLAZIONE INIZIALE --------------------------------------------
+
+per qualche motivo se l'upgrade di tensorflow alla 2.5.0 funziona solo nell'ambiente virtuale... mah
+
+mkdir tensorflow
+git clone https://github.com/tensorflow/models
+
+per l'installazione di protobuf, fare download, estrarre in una directory (es ~/bin/google_protobuf) e eseguire comandi:
+
+BASE_PROTOC_DIR='/home/loris/bin/google_protobuf/protoc-3.19.1-linux-x86_64'
+PROFILE_FILE='export PATH='"$BASE_PROTOC_DIR/bin"':$PATH'"\\\n"
+sudo bash -c 'echo -e '"$PROFILE_FILE"' > /etc/profile.d/google_protobuf.sh'
+
+Ora fare logout e login, se si apre un terminale e si scrive protobuf il comando dovrebbe mostrare il messaggio di help.
+
+----------------------------------------------------------------------------------------
+
+---------------------- INSTALLAZIONE DIRECTORY SU ALTRO PC --------------------------
+pip install -r requirements.txt
+#pip install keras-layer-normalization
+#pip3 install tf-nightly
+#pip install --ignore-installed --upgrade tensorflow==2.5.0
+python -c "import tensorflow as tf;print(tf.reduce_sum(tf.random.normal([1000, 1000])))"
+
+cd TensorFlow/models/research
+#protoc object_detection/protos/*.proto --python_out=. #test protobuf
+#git clone https://github.com/cocodataset/cocoapi.git
+#cd cocoapi/PythonAPI
+#make
+#cp -r pycocotools ../../TensorFlow/models/research/
+python -m pip install --use-feature=2020-resolver .
+python object_detection/builders/model_builder_tf2_test.py
+----------------------------------------------------------------------------------------
+
+
+python generate_tfrecord.py -x TensorFlow/workspace/training_demo/images/train -l TensorFlow/workspace/training_demo/annotations/label_map.pbtxt -o TensorFlow/workspace/training_demo/annotations/train.record
+
+cd TensorFlow/workspace/training_demo
+source ../../../venv/bin/activate
+
+python model_main_tf2.py --model_dir=models/ssd_mobilenet_v2_fpnlite_320x320_coco --pipeline_config_path=models/ssd_mobilenet_v2_fpnlite_320x320_coco/pipeline.config
+python model_main_tf2.py --model_dir=models/ssd_mobilenet_v2_fpnlite_320x320_coco --pipeline_config_path=models/ssd_mobilenet_v2_fpnlite_320x320_coco/pipeline.config --checkpoint_dir=models/ssd_mobilenet_v2_fpnlite_320x320_coco
+tensorboard --logdir=models/ssd_mobilenet_v2_fpnlite_320x320_coco --bind
+
+python ./exporter_main_v2.py --input_type image_tensor --pipeline_config_path ./models/ssd_mobilenet_v2_fpnlite_320x320_coco/pipeline.config --trained_checkpoint_dir ./models/ssd_mobilenet_v2_fpnlite_320x320_coco/ --output_directory ./exported-models/my_model
+
+python export_tflite_graph_tf2.py --pipeline_config_path=./models/ssd_mobilenet_v2_fpnlite_320x320_coco/pipeline.config --trained_checkpoint_dir=./models/ssd_mobilenet_v2_fpnlite_320x320_coco/ --output_directory=./exported-models/my_model_tflite
+
+#cd ../../../TensorFlow/models/research
+#cp object_detection/packages/tf2/setup.py .
+#pip install -q .
+pip install tflite-support
+python3
+    #tesorflow lite conversion
+    import tensorflow as tf
+    _TFLITE_MODEL_PATH = "exported-models/my_model_tflite/model.tflite"
+    converter = tf.lite.TFLiteConverter.from_saved_model('exported-models/my_model_tflite/saved_model')
+    converter.optimizations = [tf.lite.Optimize.DEFAULT]
+    tflite_model = converter.convert()
+    with open(_TFLITE_MODEL_PATH, 'wb') as f:
+    f.write(tflite_model)
+
+    #adding metadata
+    from object_detection.utils import label_map_util
+    from object_detection.utils import config_util
+    from object_detection.builders import model_builder
+    _ODT_LABEL_MAP_PATH = "annotations/label_map.pbtxt"
+    _TFLITE_LABEL_PATH = "exported-models/my_model_tflite/tflite_label_map.txt"
+    N_CLASSES = 3
+
+    category_index = label_map_util.create_category_index_from_labelmap(_ODT_LABEL_MAP_PATH)
+    f = open(_TFLITE_LABEL_PATH, 'w')
+    for class_id in range(1, 1+N_CLASSES):
+        if class_id not in category_index:
+            f.write('???\n')
+            continue
+    name = category_index[class_id]['name']
+    f.write(name+'\n')
+    f.close()
+
+    from tflite_support.metadata_writers import object_detector
+    from tflite_support.metadata_writers import writer_utils
+    _TFLITE_MODEL_WITH_METADATA_PATH = "exported-models/my_model_tflite/model_with_metadata.tflite"
+    writer = object_detector.MetadataWriter.create_for_inference(
+        writer_utils.load_file(_TFLITE_MODEL_PATH), input_norm_mean=[127.5],
+        input_norm_std=[127.5], label_file_paths=[_TFLITE_LABEL_PATH])
+    writer_utils.save_file(writer.populate(), _TFLITE_MODEL_WITH_METADATA_PATH)
+
+    from tflite_support import metadata
+    displayer = metadata.MetadataDisplayer.with_model_file(_TFLITE_MODEL_WITH_METADATA_PATH)
+    print("Metadata populated:")
+    print(displayer.get_metadata_json())
+    print("=============================")
+    print("Associated file(s) populated:")
+    print(displayer.get_packed_associated_file_list())
+
+
+
+https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/running_on_mobile_tf2.md
+https://github.com/tensorflow/examples/tree/master/lite/examples/object_detection/android
