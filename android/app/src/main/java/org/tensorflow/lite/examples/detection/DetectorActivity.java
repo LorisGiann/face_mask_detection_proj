@@ -29,6 +29,7 @@ import android.media.ImageReader.OnImageAvailableListener;
 import android.os.SystemClock;
 import android.util.Size;
 import android.util.TypedValue;
+import android.widget.CheckBox;
 import android.widget.Toast;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -202,15 +203,18 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
               final RectF location = result.getLocation();
 
               //FILTER CLASSES
-              //result.getTitle().equalsIgnoreCase("without_mask"))
+              CheckDetect ck=CheckDetect.getInstance();
+              if (ck.getCheckMask()==result.getTitle().equalsIgnoreCase("with_mask")
+                      || ck.getCheckNoMask()==result.getTitle().equalsIgnoreCase("without_mask")
+                      || ck.getCheckMaskIncorretly()==result.getTitle().equalsIgnoreCase("mask_weared_incorrect")) {
+                if (location != null && result.getConfidence() >= minimumConfidence) {
+                  canvas.drawRect(location, paint);
 
-              if (location != null && result.getConfidence() >= minimumConfidence) {
-                canvas.drawRect(location, paint);
+                  cropToFrameTransform.mapRect(location);
 
-                cropToFrameTransform.mapRect(location);
-
-                result.setLocation(location);
-                mappedRecognitions.add(result);
+                  result.setLocation(location);
+                  mappedRecognitions.add(result);
+                }
               }
             }
 
