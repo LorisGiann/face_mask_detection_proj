@@ -86,6 +86,11 @@ public abstract class CameraActivity extends AppCompatActivity
   private SwitchCompat apiSwitchCompat;
   private TextView threadsTextView;
 
+  private CheckDetect ck;
+  private TextView contMaskView;
+  private TextView contNoMaskView;
+  private TextView contMaskIncorretlyView;
+
   @Override
   protected void onCreate(final Bundle savedInstanceState) {
     LOGGER.d("onCreate " + this);
@@ -166,7 +171,10 @@ public abstract class CameraActivity extends AppCompatActivity
     plusImageView.setOnClickListener(this);
     minusImageView.setOnClickListener(this);
 
-
+    ck=CheckDetect.getInstance();
+    contMaskView= findViewById(R.id.contMask);
+    contNoMaskView= findViewById(R.id.contNoMask);
+    contMaskIncorretlyView= findViewById(R.id.contMaskIncorretly);
 
     findViewById(R.id.fatherCamera).setOnTouchListener(new OnSwipeTouchListener(CameraActivity.this) {
       @Override
@@ -296,11 +304,19 @@ public abstract class CameraActivity extends AppCompatActivity
           };
 
       processImage();
+
+
     } catch (final Exception e) {
       LOGGER.e(e, "Exception!");
       Trace.endSection();
       return;
     }
+
+    //PROBLEMINO
+    contMaskView.setText("Persone con la mascherina: "+String.valueOf(ck.getContCheckMask()));
+    contNoMaskView.setText("Persone senza la mascherina: "+String.valueOf(ck.getContCheckNoMask()));
+    contMaskIncorretlyView.setText("Persone con la mascherina indossata in modo errato: "+String.valueOf(ck.getContCheckMaskIncorretly()));
+
     Trace.endSection();
   }
 

@@ -34,7 +34,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             tools:context="org.tensorflow.demo.CameraActivity">
-
         </FrameLayout>
 
         <RelativeLayout
@@ -44,18 +43,40 @@
             android:layout_alignParentBottom="true"
             android:background="@color/tfe_color_primary"
             android:gravity="center_horizontal|bottom"
-            android:orientation="vertical"
-
-            />
-
+            android:orientation="vertical" />
 
         </RelativeLayout>
 
+    <TextView
+        android:id="@+id/contMask"
+        android:layout_width="350dp"
+        android:layout_height="47dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="500dp"
+        android:text="CIAO"></TextView>
+
+    <TextView
+        android:id="@+id/contNoMask"
+        android:layout_width="350dp"
+        android:layout_height="50dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="550dp"
+        android:text="CIAO"></TextView>
+
+    <TextView
+        android:id="@+id/contMaskIncorretly"
+        android:layout_width="350dp"
+        android:layout_height="50dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="600dp"
+        android:text="CIAO"></TextView>
 
     <include
         android:id="@+id/bottom_sheet_layout"
         layout="@layout/tfe_od_layout_bottom_sheet"
-        android:visibility="invisible" />
+        android:visibility="invisible"
+        app:layout_anchor="@+id/contMaskIncorretly"
+        app:layout_anchorGravity="bottom|center" />
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

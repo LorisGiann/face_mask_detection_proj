@@ -20,12 +20,6 @@ public class Activity_setting extends AppCompatActivity {
         ((CheckBox) findViewById(R.id.withMaskCheckbox)).setChecked(ck.getCheckMask());
         ((CheckBox) findViewById(R.id.withoutMaskCheckbox)).setChecked(ck.getCheckNoMask());
 
-        TextView contMaskView= findViewById(R.id.contMask);
-        contMaskView.setText("Persone con la mascherina: "+String.valueOf(ck.getContCheckMask()));
-        TextView contNoMaskView= findViewById(R.id.contNoMask);
-        contNoMaskView.setText("Persone senza la mascherina: "+String.valueOf(ck.getContCheckNoMask()));
-        TextView contMaskIncorretlyView= findViewById(R.id.contMaskIncorretly);
-        contMaskIncorretlyView.setText("Persone con la mascherina indossata in modo errato: "+String.valueOf(ck.getContCheckMaskIncorretly()));
 
         findViewById(R.id.fatherSetting).setOnTouchListener(new OnSwipeTouchListener(Activity_setting.this) {
             @Override

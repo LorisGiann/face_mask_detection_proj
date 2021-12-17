@@ -244,6 +244,8 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
             ck.setContCheckMaskIncorretly(contMaskIncorretly);
             contMaskIncorretly=0;
 
+
+
             tracker.trackResults(mappedRecognitions, currTimestamp);
             trackingOverlay.postInvalidate();
 
