@@ -26,10 +26,9 @@ import android.graphics.Paint.Style;
 import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.media.ImageReader.OnImageAvailableListener;
-import android.os.SystemClock;
 import android.util.Size;
 import android.util.TypedValue;
-import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.Toast;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -67,7 +66,6 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
 
   private Detector detector;
 
-  private long lastProcessingTimeMs;
   private Bitmap rgbFrameBitmap = null;
   private Bitmap croppedBitmap = null;
   private Bitmap cropCopyBitmap = null;
@@ -183,9 +181,7 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
           @Override
           public void run() {
             LOGGER.i("Running detection on image " + currTimestamp);
-            final long startTime = SystemClock.uptimeMillis();
             final List<Detector.Recognition> results = detector.recognizeImage(croppedBitmap);
-            lastProcessingTimeMs = SystemClock.uptimeMillis() - startTime;
 
             cropCopyBitmap = Bitmap.createBitmap(croppedBitmap);
             final Canvas canvas = new Canvas(cropCopyBitmap);
@@ -251,15 +247,7 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
 
             computingDetection = false;
 
-            runOnUiThread(
-                new Runnable() {
-                  @Override
-                  public void run() {
-                    showFrameInfo(previewWidth + "x" + previewHeight);
-                    showCropInfo(cropCopyBitmap.getWidth() + "x" + cropCopyBitmap.getHeight());
-                    showInference(lastProcessingTimeMs + "ms");
-                  }
-                });
+
           }
         });
   }
@@ -274,30 +262,16 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
     return DESIRED_PREVIEW_SIZE;
   }
 
+  @Override
+  public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+
+  }
+
   // Which detection model to use: by default uses Tensorflow Object Detection API frozen
   // checkpoints.
   private enum DetectorMode {
     TF_OD_API;
   }
 
-  @Override
-  protected void setUseNNAPI(final boolean isChecked) {
-    runInBackground(
-        () -> {
-          try {
-            detector.setUseNNAPI(isChecked);
-          } catch (UnsupportedOperationException e) {
-            LOGGER.e(e, "Failed to set \"Use NNAPI\".");
-            runOnUiThread(
-                () -> {
-                  Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
-                });
-          }
-        });
-  }
 
-  @Override
-  protected void setNumThreads(final int numThreads) {
-    runInBackground(() -> detector.setNumThreads(numThreads));
-  }
 }
