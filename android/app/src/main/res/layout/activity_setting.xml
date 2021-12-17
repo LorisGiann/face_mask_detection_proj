@@ -25,7 +25,7 @@
         android:layout_height="50dp"
         android:layout_marginStart="100dp"
         android:layout_marginTop="32dp"
-        android:text="incorrect mask checkbox"
+        android:text="incorrect mask"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView" />
 
@@ -43,7 +43,7 @@
         android:layout_width="wrap_content"
         android:layout_height="50dp"
         android:layout_marginStart="100dp"
-        android:text="with mask checkbox"
+        android:text="with mask"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/IncorrectMaskCheckbox" />
 
