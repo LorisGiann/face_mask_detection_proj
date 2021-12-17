@@ -27,7 +27,7 @@ public class Activity_setting extends AppCompatActivity {
                 ck.setCheckMask(((CheckBox) findViewById(R.id.withMaskCheckbox)).isChecked());
                 ck.setCheckNoMask(((CheckBox) findViewById(R.id.withoutMaskCheckbox)).isChecked());
                 ck.setCheckMaskIncorretly(((CheckBox) findViewById(R.id.IncorrectMaskCheckbox)).isChecked());
-
+                ck.setCheckCont(true);
                 finish();
             }
         });
