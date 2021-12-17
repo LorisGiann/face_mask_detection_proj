@@ -15,7 +15,6 @@
         android:layout_marginTop="60dp"
         android:text="SETTING"
         android:textSize="34sp"
-        app:layout_constraintBottom_toTopOf="@+id/IncorrectMaskCheckbox"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -23,31 +22,30 @@
     <CheckBox
         android:id="@+id/IncorrectMaskCheckbox"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:layout_marginStart="100dp"
         android:layout_marginTop="32dp"
         android:text="incorrect mask checkbox"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/withoutMaskCheckbox" />
+        app:layout_constraintTop_toBottomOf="@+id/textView" />
 
     <CheckBox
         android:id="@+id/withoutMaskCheckbox"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:layout_marginStart="100dp"
         android:text="without mask"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/withMaskCheckbox" />
+        app:layout_constraintTop_toBottomOf="@+id/withMaskCheckbox" />
 
     <CheckBox
         android:id="@+id/withMaskCheckbox"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:layout_marginStart="100dp"
         android:text="with mask checkbox"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/withoutMaskCheckbox" />
-
+        app:layout_constraintTop_toBottomOf="@+id/IncorrectMaskCheckbox" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
