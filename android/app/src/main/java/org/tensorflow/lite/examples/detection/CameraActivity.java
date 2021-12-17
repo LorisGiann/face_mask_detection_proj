@@ -234,10 +234,10 @@ public abstract class CameraActivity extends AppCompatActivity
       return;
     }
 
-    //PROBLEMINO
-    //contMaskView.setText("Persone con la mascherina: "+String.valueOf(ck.getContCheckMask()));
-    //contNoMaskView.setText("Persone senza la mascherina: "+String.valueOf(ck.getContCheckNoMask()));
-    //contMaskIncorretlyView.setText("Persone con la mascherina indossata in modo errato: "+String.valueOf(ck.getContCheckMaskIncorretly()));
+    //PROBLEM
+    //contMaskView.setText("Mask: "+String.valueOf(ck.getContCheckMask()));
+    //contNoMaskView.setText("No mask: "+String.valueOf(ck.getContCheckNoMask()));
+    //contMaskIncorretlyView.setText("Mask incorrect: "+String.valueOf(ck.getContCheckMaskIncorretly()));
 
     Trace.endSection();
   }
