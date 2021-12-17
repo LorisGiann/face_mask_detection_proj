@@ -83,6 +83,11 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
 
   private BorderedText borderedText;
 
+  //CONT CLASSES
+  private int contMask=0;
+  private int contNoMask=0;
+  private int contMaskIncorretly=0;
+
   @Override
   public void onPreviewSizeChosen(final Size size, final int rotation) {
     final float textSizePx =
@@ -199,15 +204,29 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
             final List<Detector.Recognition> mappedRecognitions =
                 new ArrayList<Detector.Recognition>();
 
+            //RESET CONT
+            CheckDetect ck=CheckDetect.getInstance();
+
             for (final Detector.Recognition result : results) {
               final RectF location = result.getLocation();
 
               //FILTER CLASSES based on settings
-              CheckDetect ck=CheckDetect.getInstance();
-              if (ck.getCheckMask()==result.getTitle().equalsIgnoreCase("with_mask")
-                      || ck.getCheckNoMask()==result.getTitle().equalsIgnoreCase("without_mask")
-                      || ck.getCheckMaskIncorretly()==result.getTitle().equalsIgnoreCase("mask_weared_incorrect")) {
+
+              if ( (ck.getCheckMask()==true && result.getTitle().equalsIgnoreCase("with_mask")==true)
+                      || (ck.getCheckNoMask()==true && result.getTitle().equalsIgnoreCase("without_mask")==true)
+                      || (ck.getCheckMaskIncorretly()==true && result.getTitle().equalsIgnoreCase("mask_weared_incorrect")==true)) {
                 if (location != null && result.getConfidence() >= minimumConfidence) {
+
+                  if (result.getTitle().equalsIgnoreCase("with_mask")==true){
+                      contMask++;
+                  }
+                  if (result.getTitle().equalsIgnoreCase("without_mask")==true){
+                      contNoMask++;
+                  }
+                  if (result.getTitle().equalsIgnoreCase("mask_weared_incorrect")==true){
+                      contMaskIncorretly++;
+                  }
+
                   canvas.drawRect(location, paint);
 
                   cropToFrameTransform.mapRect(location);
@@ -217,6 +236,10 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
                 }
               }
             }
+
+            ck.setContCheckMask(contMask);
+            ck.setContCheckNoMask(contNoMask);
+            ck.setContCheckMaskIncorretly(contMaskIncorretly);
 
             tracker.trackResults(mappedRecognitions, currTimestamp);
             trackingOverlay.postInvalidate();
