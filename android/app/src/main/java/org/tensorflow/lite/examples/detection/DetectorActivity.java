@@ -202,7 +202,7 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
             for (final Detector.Recognition result : results) {
               final RectF location = result.getLocation();
 
-              //FILTER CLASSES
+              //FILTER CLASSES based on settings
               CheckDetect ck=CheckDetect.getInstance();
               if (ck.getCheckMask()==result.getTitle().equalsIgnoreCase("with_mask")
                       || ck.getCheckNoMask()==result.getTitle().equalsIgnoreCase("without_mask")
