@@ -33,7 +33,16 @@
             android:id="@+id/container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:context="org.tensorflow.demo.CameraActivity"></FrameLayout>
+            tools:context="org.tensorflow.demo.CameraActivity">
+        </FrameLayout>
+
+        <ImageView
+            android:id="@+id/send_icon"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:padding="5dp"
+            android:scaleType="centerCrop"
+            android:src="@mipmap/ic_launcher_round"/>
 
         <RelativeLayout
             android:id="@+id/bottom_layer"
