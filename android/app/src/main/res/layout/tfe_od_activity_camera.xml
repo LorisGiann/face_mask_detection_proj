@@ -33,8 +33,7 @@
             android:id="@+id/container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:context="org.tensorflow.demo.CameraActivity">
-        </FrameLayout>
+            tools:context="org.tensorflow.demo.CameraActivity"></FrameLayout>
 
         <RelativeLayout
             android:id="@+id/bottom_layer"
@@ -47,13 +46,15 @@
 
         </RelativeLayout>
 
+
+
     <TextView
         android:id="@+id/contMask"
         android:layout_width="350dp"
         android:layout_height="47dp"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="500dp"
-        android:text="Mask: "></TextView>
+        android:text="Mask: " />
 
     <TextView
         android:id="@+id/contNoMask"
@@ -61,7 +62,7 @@
         android:layout_height="50dp"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="550dp"
-        android:text="No mask:"></TextView>
+        android:text="No mask:" />
 
     <TextView
         android:id="@+id/contMaskIncorretly"
@@ -69,7 +70,7 @@
         android:layout_height="50dp"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="600dp"
-        android:text="Mask incorretly:"></TextView>
+        android:text="Mask incorretly:" />
 
 
 

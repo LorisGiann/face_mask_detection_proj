@@ -223,6 +223,8 @@ public abstract class CameraActivity extends AppCompatActivity
             }
           };
 
+      
+
       processImage();
 
 
@@ -446,10 +448,8 @@ public abstract class CameraActivity extends AppCompatActivity
   }
 
 
-  @Override
-  public void onClick(View v) {
 
-  }
+  public void onClick(View v) {}
 
   protected abstract void processImage();
 
