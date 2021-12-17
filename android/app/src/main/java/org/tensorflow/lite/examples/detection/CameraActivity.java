@@ -106,7 +106,6 @@ public abstract class CameraActivity extends AppCompatActivity
     findViewById(R.id.fatherCamera).setOnTouchListener(new OnSwipeTouchListener(CameraActivity.this) {
       @Override
       public void onSwipeLeft() {
-        ck.setCheckCont(false);
         openActivitySetting();
       }
     });
@@ -115,8 +114,6 @@ public abstract class CameraActivity extends AppCompatActivity
   public void openActivitySetting(){
     Intent intent = new Intent(this,Activity_setting.class);
     startActivity(intent);
-
-
   }
 
 
@@ -226,7 +223,7 @@ public abstract class CameraActivity extends AppCompatActivity
             }
           };
 
-
+      
 
       processImage();
 
@@ -238,11 +235,9 @@ public abstract class CameraActivity extends AppCompatActivity
     }
 
     //PROBLEMINO
-    if (ck.getCheckCont()==true){
-      contMaskView.setText("Mask: "+String.valueOf(ck.getContCheckMask()));
-      contNoMaskView.setText("No mask: "+String.valueOf(ck.getContCheckNoMask()));
-      contMaskIncorretlyView.setText("Mask incorretly: "+String.valueOf(ck.getContCheckMaskIncorretly()));
-    }
+    //contMaskView.setText("Persone con la mascherina: "+String.valueOf(ck.getContCheckMask()));
+    //contNoMaskView.setText("Persone senza la mascherina: "+String.valueOf(ck.getContCheckNoMask()));
+    //contMaskIncorretlyView.setText("Persone con la mascherina indossata in modo errato: "+String.valueOf(ck.getContCheckMaskIncorretly()));
 
     Trace.endSection();
   }

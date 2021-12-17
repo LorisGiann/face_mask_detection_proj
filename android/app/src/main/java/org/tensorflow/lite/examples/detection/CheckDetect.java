@@ -9,8 +9,6 @@ public class CheckDetect {
     private int contCheckNoMask;
     private int contCheckMaskIncorretly;
 
-    private boolean checkCont;
-
     private CheckDetect(){
         this.checkMask=true;
         this.checkMaskIncorretly=true;
@@ -18,7 +16,6 @@ public class CheckDetect {
         this.contCheckMask=0;
         this.contCheckNoMask=0;
         this.contCheckMaskIncorretly=0;
-        this.checkCont=true;
     }
 
     public static CheckDetect getInstance() {
@@ -71,14 +68,6 @@ public class CheckDetect {
 
     public int getContCheckNoMask(){
         return contCheckNoMask;
-    }
-
-    public boolean getCheckCont(){
-        return checkCont;
-    }
-
-    public void setCheckCont(boolean b){
-        this.checkCont=b;
     }
 
 }
