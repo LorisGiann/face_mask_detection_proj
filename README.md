@@ -7,9 +7,9 @@ To train this model follow the steps explained here.
 #### Download and prepare the data
 Downoad this repo:
 ```sh
-git colone https://github.com/LorisGiann/face_mask_detection_proj.git
+git clone https://github.com/LorisGiann/face_mask_detection_proj.git
 ```
-Download the Mask Dataset} from [Kaggle](https://www.kaggle.com/andrewmvd/face-mask-detection) or from (makeml site)[https://makeml.app/datasets/mask] .
+Download the Mask Dataset} from [Kaggle](https://www.kaggle.com/andrewmvd/face-mask-detection) or from [makeml site](https://makeml.app/datasets/mask) .
 Now unpack the archive, you'll notice that for each image in _images_ there is a correspondong .xml file in _annotations_. We need to populate the _train_ and _test_ folders in _tensorflow_training/TensorFlow/workspace/training_demo/images/_, so grab a large portion of the photos with the respective xml files, and put them in the _train_ folder. Then copy the remaining files to the _test_ folder.
 
 #### Install packages
