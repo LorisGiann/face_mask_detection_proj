@@ -26,47 +26,47 @@ public class CheckDetect {
         return instance;
     }
 
-    public void setCheckMaskIncorretly(boolean b){
+    synchronized public void setCheckMaskIncorretly(boolean b){
         checkMaskIncorretly=b;
     }
-    public void setCheckMask(boolean b){
+    synchronized public void setCheckMask(boolean b){
         checkMask=b;
     }
-    public void setCheckNoMask(boolean b){
+    synchronized public void setCheckNoMask(boolean b){
         checkNoMask=b;
     }
 
-    public boolean getCheckMaskIncorretly(){
+    synchronized public boolean getCheckMaskIncorretly(){
         return checkMaskIncorretly;
     }
 
-    public boolean getCheckMask(){
+    synchronized public boolean getCheckMask(){
         return checkMask;
     }
 
-    public boolean getCheckNoMask(){
+    synchronized public boolean getCheckNoMask(){
         return checkNoMask;
     }
 
-    public void setContCheckMaskIncorretly(int b){
+    synchronized public void setContCheckMaskIncorretly(int b){
         contCheckMaskIncorretly=b;
     }
-    public void setContCheckMask(int b){
+    synchronized public void setContCheckMask(int b){
         contCheckMask=b;
     }
-    public void setContCheckNoMask(int b){
+    synchronized public void setContCheckNoMask(int b){
         contCheckNoMask=b;
     }
 
-    public int getContCheckMaskIncorretly(){
+    synchronized public int getContCheckMaskIncorretly(){
         return contCheckMaskIncorretly;
     }
 
-    public int getContCheckMask(){
+    synchronized public int getContCheckMask(){
         return contCheckMask;
     }
 
-    public int getContCheckNoMask(){
+    synchronized public int getContCheckNoMask(){
         return contCheckNoMask;
     }
 

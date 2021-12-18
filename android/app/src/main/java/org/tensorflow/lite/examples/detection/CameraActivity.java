@@ -234,10 +234,9 @@ public abstract class CameraActivity extends AppCompatActivity
       return;
     }
 
-    //PROBLEM
-    //contMaskView.setText("Mask: "+String.valueOf(ck.getContCheckMask()));
-    //contNoMaskView.setText("No mask: "+String.valueOf(ck.getContCheckNoMask()));
-    //contMaskIncorretlyView.setText("Mask incorrect: "+String.valueOf(ck.getContCheckMaskIncorretly()));
+    contMaskView.setText("Mask: "+String.valueOf(ck.getContCheckMask()));
+    contNoMaskView.setText("No mask: "+String.valueOf(ck.getContCheckNoMask()));
+    contMaskIncorretlyView.setText("Mask incorrect: "+String.valueOf(ck.getContCheckMaskIncorretly()));
 
     Trace.endSection();
   }
