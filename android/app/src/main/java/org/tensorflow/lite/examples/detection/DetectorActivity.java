@@ -235,11 +235,15 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
 
             runOnUiThread(
               new Runnable() {
+                int localContMask = contMask;
+                int localContNoMask = contNoMask;
+                int localcontMaskIncorretly = contMaskIncorretly;
+
                 @Override
                 public void run() {
-                  printMaskCount(contMask);
-                  printNoMaskCount(contNoMask);
-                  printMaskIncorrectlyCount(contMaskIncorretly);
+                  printMaskCount(localContMask);
+                  printNoMaskCount(localContNoMask);
+                  printMaskIncorrectlyCount(localcontMaskIncorretly);
                 }
               });
 

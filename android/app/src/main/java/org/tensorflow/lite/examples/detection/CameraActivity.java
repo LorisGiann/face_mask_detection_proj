@@ -459,7 +459,7 @@ public abstract class CameraActivity extends AppCompatActivity
   protected abstract Size getDesiredPreviewFrameSize();
 
   public void printMaskCount(int count){ contMaskView.setText("Mask: "+String.valueOf(count)); }
-  public void printNoMaskCount(int count){ contNoMaskView.setText("No mask: "+String.valueOf(ck.getContCheckNoMask())); }
-  public void printMaskIncorrectlyCount(int count){ contMaskIncorretlyView.setText("Mask incorrect: "+String.valueOf(ck.getContCheckMaskIncorretly())); }
+  public void printNoMaskCount(int count){ contNoMaskView.setText("No mask: "+String.valueOf(count)); }
+  public void printMaskIncorrectlyCount(int count){ contMaskIncorretlyView.setText("Mask incorrect: "+String.valueOf(count)); }
 
 }
