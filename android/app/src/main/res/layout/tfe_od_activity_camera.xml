@@ -59,10 +59,10 @@
     <TextView
         android:id="@+id/contMask"
         android:layout_width="350dp"
-        android:layout_height="47dp"
+        android:layout_height="50dp"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="500dp"
-        android:text="Mask: " />
+        android:text="Mask: 0" />
 
     <TextView
         android:id="@+id/contNoMask"
@@ -70,7 +70,7 @@
         android:layout_height="50dp"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="550dp"
-        android:text="No mask:" />
+        android:text="No mask: 0" />
 
     <TextView
         android:id="@+id/contMaskIncorretly"
@@ -78,7 +78,15 @@
         android:layout_height="50dp"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="600dp"
-        android:text="Mask incorretly:" />
+        android:text="Mask incorretly: 0" />
+
+    <TextView
+        android:id="@+id/maskPercent"
+        android:layout_width="350dp"
+        android:layout_height="50dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="650dp"
+        android:text="Percent people with mask: : 0%" />
 
 
 

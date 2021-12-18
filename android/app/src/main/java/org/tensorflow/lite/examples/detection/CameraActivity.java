@@ -21,6 +21,7 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Typeface;
 import android.hardware.Camera;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCharacteristics;
@@ -81,6 +82,7 @@ public abstract class CameraActivity extends AppCompatActivity
   private TextView contMaskView;
   private TextView contNoMaskView;
   private TextView contMaskIncorretlyView;
+  private TextView percentMask;
 
   @Override
   protected void onCreate(final Bundle savedInstanceState) {
@@ -95,13 +97,13 @@ public abstract class CameraActivity extends AppCompatActivity
     } else {
       requestPermission();
     }
-
-
+    
 
     ck=CheckDetect.getInstance();
     contMaskView= findViewById(R.id.contMask);
     contNoMaskView= findViewById(R.id.contNoMask);
     contMaskIncorretlyView= findViewById(R.id.contMaskIncorretly);
+    percentMask =findViewById(R.id.maskPercent);
 
     findViewById(R.id.fatherCamera).setOnTouchListener(new OnSwipeTouchListener(CameraActivity.this) {
       @Override
@@ -233,10 +235,6 @@ public abstract class CameraActivity extends AppCompatActivity
       Trace.endSection();
       return;
     }
-
-    //contMaskView.setText("Mask: "+String.valueOf(ck.getContCheckMask()));
-    //contNoMaskView.setText("No mask: "+String.valueOf(ck.getContCheckNoMask()));
-    //contMaskIncorretlyView.setText("Mask incorrect: "+String.valueOf(ck.getContCheckMaskIncorretly()));
 
     Trace.endSection();
   }
@@ -461,5 +459,5 @@ public abstract class CameraActivity extends AppCompatActivity
   public void printMaskCount(int count){ contMaskView.setText("Mask: "+String.valueOf(count)); }
   public void printNoMaskCount(int count){ contNoMaskView.setText("No mask: "+String.valueOf(count)); }
   public void printMaskIncorrectlyCount(int count){ contMaskIncorretlyView.setText("Mask incorrect: "+String.valueOf(count)); }
-
+  public void printPercentMask(int count){ percentMask.setText("Percent people with mask: "+String.valueOf(count)+"%");}
 }
