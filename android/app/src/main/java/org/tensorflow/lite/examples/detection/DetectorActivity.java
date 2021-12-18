@@ -233,6 +233,16 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
               }
             }
 
+            runOnUiThread(
+              new Runnable() {
+                @Override
+                public void run() {
+                  printMaskCount(contMask);
+                  printNoMaskCount(contNoMask);
+                  printMaskIncorrectlyCount(contMaskIncorretly);
+                }
+              });
+
             ck.setContCheckMask(contMask);
             contMask=0;
             ck.setContCheckNoMask(contNoMask);
