@@ -97,13 +97,19 @@ public abstract class CameraActivity extends AppCompatActivity
     } else {
       requestPermission();
     }
-    
+
 
     ck=CheckDetect.getInstance();
     contMaskView= findViewById(R.id.contMask);
     contNoMaskView= findViewById(R.id.contNoMask);
     contMaskIncorretlyView= findViewById(R.id.contMaskIncorretly);
     percentMask =findViewById(R.id.maskPercent);
+
+    Typeface type = Typeface.createFromAsset(getAssets(),"fonts/BebasNeue-Regular.ttf");
+    contMaskView.setTypeface(type);
+    contNoMaskView.setTypeface(type);
+    contMaskIncorretlyView.setTypeface(type);
+    percentMask.setTypeface(type);
 
     findViewById(R.id.fatherCamera).setOnTouchListener(new OnSwipeTouchListener(CameraActivity.this) {
       @Override

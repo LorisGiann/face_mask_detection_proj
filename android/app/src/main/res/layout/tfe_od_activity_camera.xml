@@ -48,7 +48,7 @@
             android:layout_width="match_parent"
             android:layout_height="250dp"
             android:layout_alignParentBottom="true"
-            android:background="@color/tfe_color_primary"
+            android:background="@drawable/background_border"
             android:gravity="center_horizontal|bottom"
             android:orientation="vertical" />
 
@@ -60,7 +60,7 @@
         android:id="@+id/contMask"
         android:layout_width="350dp"
         android:layout_height="50dp"
-        android:layout_marginLeft="10dp"
+        android:layout_marginLeft="15dp"
         android:layout_marginTop="500dp"
         android:text="Mask: 0" />
 
@@ -68,7 +68,7 @@
         android:id="@+id/contNoMask"
         android:layout_width="350dp"
         android:layout_height="50dp"
-        android:layout_marginLeft="10dp"
+        android:layout_marginLeft="15dp"
         android:layout_marginTop="550dp"
         android:text="No mask: 0" />
 
@@ -76,7 +76,7 @@
         android:id="@+id/contMaskIncorretly"
         android:layout_width="350dp"
         android:layout_height="50dp"
-        android:layout_marginLeft="10dp"
+        android:layout_marginLeft="15dp"
         android:layout_marginTop="600dp"
         android:text="Mask incorretly: 0" />
 
@@ -84,7 +84,7 @@
         android:id="@+id/maskPercent"
         android:layout_width="350dp"
         android:layout_height="50dp"
-        android:layout_marginLeft="10dp"
+        android:layout_marginLeft="15dp"
         android:layout_marginTop="650dp"
         android:text="Percent people with mask: : 0%" />
 

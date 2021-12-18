@@ -3,12 +3,17 @@ package org.tensorflow.lite.examples.detection;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
 
 public class Activity_setting extends AppCompatActivity {
+    private TextView title;
+    private TextView IncorrectMaskCheckbox;
+    private TextView withoutMaskCheckbox;
+    private TextView withMaskCheckbox;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,6 +25,17 @@ public class Activity_setting extends AppCompatActivity {
         ((CheckBox) findViewById(R.id.withMaskCheckbox)).setChecked(ck.getCheckMask());
         ((CheckBox) findViewById(R.id.withoutMaskCheckbox)).setChecked(ck.getCheckNoMask());
 
+
+        title=findViewById(R.id.textView);
+        withMaskCheckbox=findViewById(R.id.withMaskCheckbox);
+        withoutMaskCheckbox=findViewById(R.id.withoutMaskCheckbox);
+        IncorrectMaskCheckbox=findViewById(R.id.IncorrectMaskCheckbox);
+
+        Typeface type = Typeface.createFromAsset(getAssets(),"fonts/BebasNeue-Regular.ttf");
+        title.setTypeface(type);
+        withMaskCheckbox.setTypeface(type);
+        withoutMaskCheckbox.setTypeface(type);
+        IncorrectMaskCheckbox.setTypeface(type);
 
         findViewById(R.id.fatherSetting).setOnTouchListener(new OnSwipeTouchListener(Activity_setting.this) {
             @Override
