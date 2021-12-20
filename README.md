@@ -86,4 +86,49 @@ Once this is done, we install a python package, then we can use a ptyhon3 shell 
 pip install tflite-support
 python3
 ```
-This is the python code (chenge the path constant in capital letters if you need). The script can also be adapted to use quantization, or other options, see this [google colab sketch](https://colab.research.google.com/github/tensorflow/models/blob/master/research/object_detection/colab_tutorials/convert_odt_model_to_TFLite.ipynb).
+This is the python code (change the path constant in capital letters if you need). The script can also be adapted to use quantization, or other options, see this [google colab sketch](https://colab.research.google.com/github/tensorflow/models/blob/master/research/object_detection/colab_tutorials/convert_odt_model_to_TFLite.ipynb).
+```
+  #tesorflow lite conversion
+  import tensorflow as tf
+  _TFLITE_MODEL_PATH = "exported-models/my_model_tflite/model.tflite"
+  converter = tf.lite.TFLiteConverter.from_saved_model('exported-models/my_model_tflite/saved_model')
+  converter.optimizations = [tf.lite.Optimize.DEFAULT]
+  tflite_model = converter.convert()
+  with open(_TFLITE_MODEL_PATH, 'wb') as f:
+      f.write(tflite_model)
+
+  #adding metadata
+  from object_detection.utils import label_map_util
+  from object_detection.utils import config_util
+  from object_detection.builders import model_builder
+  _ODT_LABEL_MAP_PATH = "annotations/label_map.pbtxt"
+  _TFLITE_LABEL_PATH = "exported-models/my_model_tflite/tflite_label_map.txt"
+  N_CLASSES = 3
+
+  category_index = label_map_util.create_category_index_from_labelmap(_ODT_LABEL_MAP_PATH)
+  f = open(_TFLITE_LABEL_PATH, 'w')
+  for class_id in range(1, 1+N_CLASSES):
+      if class_id not in category_index:
+          f.write('???\n')
+          continue
+
+  name = category_index[class_id]['name']
+  f.write(name+'\n')
+  f.close()
+
+  from tflite_support.metadata_writers import object_detector
+  from tflite_support.metadata_writers import writer_utils
+  _TFLITE_MODEL_WITH_METADATA_PATH = "exported-models/my_model_tflite/model_with_metadata.tflite"
+  writer = object_detector.MetadataWriter.create_for_inference(
+      writer_utils.load_file(_TFLITE_MODEL_PATH), input_norm_mean=[127.5],
+      input_norm_std=[127.5], label_file_paths=[_TFLITE_LABEL_PATH])
+  writer_utils.save_file(writer.populate(), _TFLITE_MODEL_WITH_METADATA_PATH)
+
+  from tflite_support import metadata
+  displayer = metadata.MetadataDisplayer.with_model_file(_TFLITE_MODEL_WITH_METADATA_PATH)
+  print("Metadata populated:")
+  print(displayer.get_metadata_json())
+  print("=============================")
+  print("Associated file(s) populated:")
+  print(displayer.get_packed_associated_file_list())
+```
