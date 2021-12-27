@@ -21,6 +21,7 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Typeface;
 import android.hardware.Camera;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCharacteristics;
@@ -76,15 +77,12 @@ public abstract class CameraActivity extends AppCompatActivity
   private Runnable postInferenceCallback;
   private Runnable imageConverter;
 
-  private LinearLayout bottomSheetLayout;
-  private LinearLayout gestureLayout;
-  private BottomSheetBehavior<LinearLayout> sheetBehavior;
 
-  protected TextView frameValueTextView, cropValueTextView, inferenceTimeTextView;
-  protected ImageView bottomSheetArrowImageView;
-  private ImageView plusImageView, minusImageView;
-  private SwitchCompat apiSwitchCompat;
-  private TextView threadsTextView;
+  private CheckDetect ck;
+  private TextView contMaskView;
+  private TextView contNoMaskView;
+  private TextView contMaskIncorretlyView;
+  private TextView percentMask;
 
   @Override
   protected void onCreate(final Bundle savedInstanceState) {
@@ -100,74 +98,18 @@ public abstract class CameraActivity extends AppCompatActivity
       requestPermission();
     }
 
-    threadsTextView = findViewById(R.id.threads);
-    plusImageView = findViewById(R.id.plus);
-    minusImageView = findViewById(R.id.minus);
-    apiSwitchCompat = findViewById(R.id.api_info_switch);
-    bottomSheetLayout = findViewById(R.id.bottom_sheet_layout);
-    gestureLayout = findViewById(R.id.gesture_layout);
-    sheetBehavior = BottomSheetBehavior.from(bottomSheetLayout);
-    bottomSheetArrowImageView = findViewById(R.id.bottom_sheet_arrow);
 
+    ck=CheckDetect.getInstance();
+    contMaskView= findViewById(R.id.contMask);
+    contNoMaskView= findViewById(R.id.contNoMask);
+    contMaskIncorretlyView= findViewById(R.id.contMaskIncorretly);
+    percentMask =findViewById(R.id.maskPercent);
 
-
-    ViewTreeObserver vto = gestureLayout.getViewTreeObserver();
-    vto.addOnGlobalLayoutListener(
-        new ViewTreeObserver.OnGlobalLayoutListener() {
-          @Override
-          public void onGlobalLayout() {
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
-              gestureLayout.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-            } else {
-              gestureLayout.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-            }
-            //                int width = bottomSheetLayout.getMeasuredWidth();
-            int height = gestureLayout.getMeasuredHeight();
-
-            sheetBehavior.setPeekHeight(height);
-          }
-        });
-    sheetBehavior.setHideable(false);
-
-    sheetBehavior.setBottomSheetCallback(
-        new BottomSheetBehavior.BottomSheetCallback() {
-          @Override
-          public void onStateChanged(@NonNull View bottomSheet, int newState) {
-            switch (newState) {
-              case BottomSheetBehavior.STATE_HIDDEN:
-                break;
-              case BottomSheetBehavior.STATE_EXPANDED:
-                {
-                  bottomSheetArrowImageView.setImageResource(R.drawable.icn_chevron_down);
-                }
-                break;
-              case BottomSheetBehavior.STATE_COLLAPSED:
-                {
-                  bottomSheetArrowImageView.setImageResource(R.drawable.icn_chevron_up);
-                }
-                break;
-              case BottomSheetBehavior.STATE_DRAGGING:
-                break;
-              case BottomSheetBehavior.STATE_SETTLING:
-                bottomSheetArrowImageView.setImageResource(R.drawable.icn_chevron_up);
-                break;
-            }
-          }
-
-          @Override
-          public void onSlide(@NonNull View bottomSheet, float slideOffset) {}
-        });
-
-    frameValueTextView = findViewById(R.id.frame_info);
-    cropValueTextView = findViewById(R.id.crop_info);
-    inferenceTimeTextView = findViewById(R.id.inference_info);
-
-    apiSwitchCompat.setOnCheckedChangeListener(this);
-
-    plusImageView.setOnClickListener(this);
-    minusImageView.setOnClickListener(this);
-
-
+    Typeface type = Typeface.createFromAsset(getAssets(),"fonts/BebasNeue-Regular.ttf");
+    contMaskView.setTypeface(type);
+    contNoMaskView.setTypeface(type);
+    contMaskIncorretlyView.setTypeface(type);
+    percentMask.setTypeface(type);
 
     findViewById(R.id.fatherCamera).setOnTouchListener(new OnSwipeTouchListener(CameraActivity.this) {
       @Override
@@ -188,13 +130,6 @@ public abstract class CameraActivity extends AppCompatActivity
     return rgbBytes;
   }
 
-  protected int getLuminanceStride() {
-    return yRowStride;
-  }
-
-  protected byte[] getLuminance() {
-    return yuvBytes[0];
-  }
 
   /** Callback for android.hardware.Camera API */
   @Override
@@ -296,12 +231,17 @@ public abstract class CameraActivity extends AppCompatActivity
             }
           };
 
+      
+
       processImage();
+
+
     } catch (final Exception e) {
       LOGGER.e(e, "Exception!");
       Trace.endSection();
       return;
     }
+
     Trace.endSection();
   }
 
@@ -510,45 +450,9 @@ public abstract class CameraActivity extends AppCompatActivity
     }
   }
 
-  @Override
-  public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-    setUseNNAPI(isChecked);
-    if (isChecked) apiSwitchCompat.setText("NNAPI");
-    else apiSwitchCompat.setText("TFLITE");
-  }
 
-  @Override
-  public void onClick(View v) {
-    if (v.getId() == R.id.plus) {
-      String threads = threadsTextView.getText().toString().trim();
-      int numThreads = Integer.parseInt(threads);
-      if (numThreads >= 9) return;
-      numThreads++;
-      threadsTextView.setText(String.valueOf(numThreads));
-      setNumThreads(numThreads);
-    } else if (v.getId() == R.id.minus) {
-      String threads = threadsTextView.getText().toString().trim();
-      int numThreads = Integer.parseInt(threads);
-      if (numThreads == 1) {
-        return;
-      }
-      numThreads--;
-      threadsTextView.setText(String.valueOf(numThreads));
-      setNumThreads(numThreads);
-    }
-  }
 
-  protected void showFrameInfo(String frameInfo) {
-    frameValueTextView.setText(frameInfo);
-  }
-
-  protected void showCropInfo(String cropInfo) {
-    cropValueTextView.setText(cropInfo);
-  }
-
-  protected void showInference(String inferenceTime) {
-    inferenceTimeTextView.setText(inferenceTime);
-  }
+  public void onClick(View v) {}
 
   protected abstract void processImage();
 
@@ -558,7 +462,8 @@ public abstract class CameraActivity extends AppCompatActivity
 
   protected abstract Size getDesiredPreviewFrameSize();
 
-  protected abstract void setNumThreads(int numThreads);
-
-  protected abstract void setUseNNAPI(boolean isChecked);
+  public void printMaskCount(int count){ contMaskView.setText(String.valueOf(count)); }
+  public void printNoMaskCount(int count){ contNoMaskView.setText(String.valueOf(count)); }
+  public void printMaskIncorrectlyCount(int count){ contMaskIncorretlyView.setText(String.valueOf(count)); }
+  public void printPercentMask(int count){ percentMask.setText(String.valueOf(count)+"%");}
 }

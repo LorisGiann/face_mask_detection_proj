@@ -26,9 +26,9 @@ import android.graphics.Paint.Style;
 import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.media.ImageReader.OnImageAvailableListener;
-import android.os.SystemClock;
 import android.util.Size;
 import android.util.TypedValue;
+import android.widget.CompoundButton;
 import android.widget.Toast;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -50,14 +50,14 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
   private static final Logger LOGGER = new Logger();
 
   // Configuration values for the prepackaged SSD model.
-  private static final int TF_OD_API_INPUT_SIZE = 300;
+  private static final int TF_OD_API_INPUT_SIZE = 320;
   private static final boolean TF_OD_API_IS_QUANTIZED = true;
   private static final String TF_OD_API_MODEL_FILE = "detect.tflite";
   private static final String TF_OD_API_LABELS_FILE = "tflite_label_map.txt";
   private static final DetectorMode MODE = DetectorMode.TF_OD_API;
   // Minimum detection confidence to track a detection.
   private static final float MINIMUM_CONFIDENCE_TF_OD_API = 0.5f;
-  private static final boolean MAINTAIN_ASPECT = false;
+  private static final boolean MAINTAIN_ASPECT = true;
   private static final Size DESIRED_PREVIEW_SIZE = new Size(640, 480);
   private static final boolean SAVE_PREVIEW_BITMAP = false;
   private static final float TEXT_SIZE_DIP = 10;
@@ -66,7 +66,6 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
 
   private Detector detector;
 
-  private long lastProcessingTimeMs;
   private Bitmap rgbFrameBitmap = null;
   private Bitmap croppedBitmap = null;
   private Bitmap cropCopyBitmap = null;
@@ -81,6 +80,11 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
   private MultiBoxTracker tracker;
 
   private BorderedText borderedText;
+
+  //CONT CLASSES
+  private int contMask=0;
+  private int contNoMask=0;
+  private int contMaskIncorretly=0;
 
   @Override
   public void onPreviewSizeChosen(final Size size, final int rotation) {
@@ -177,9 +181,7 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
           @Override
           public void run() {
             LOGGER.i("Running detection on image " + currTimestamp);
-            final long startTime = SystemClock.uptimeMillis();
             final List<Detector.Recognition> results = detector.recognizeImage(croppedBitmap);
-            lastProcessingTimeMs = SystemClock.uptimeMillis() - startTime;
 
             cropCopyBitmap = Bitmap.createBitmap(croppedBitmap);
             final Canvas canvas = new Canvas(cropCopyBitmap);
@@ -198,32 +200,74 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
             final List<Detector.Recognition> mappedRecognitions =
                 new ArrayList<Detector.Recognition>();
 
+            //RESET CONT
+            CheckDetect ck=CheckDetect.getInstance();
+
             for (final Detector.Recognition result : results) {
               final RectF location = result.getLocation();
-              if (location != null && result.getConfidence() >= minimumConfidence) {
-                canvas.drawRect(location, paint);
 
-                cropToFrameTransform.mapRect(location);
+              //FILTER CLASSES based on settings
 
-                result.setLocation(location);
-                mappedRecognitions.add(result);
+              if ( (ck.getCheckMask()==true && result.getTitle().equalsIgnoreCase("with_mask")==true)
+                      || (ck.getCheckNoMask()==true && result.getTitle().equalsIgnoreCase("without_mask")==true)
+                      || (ck.getCheckMaskIncorretly()==true && result.getTitle().equalsIgnoreCase("mask_weared_incorrect")==true)) {
+                if (location != null && result.getConfidence() >= minimumConfidence) {
+
+                  if (result.getTitle().equalsIgnoreCase("with_mask")==true){
+                      contMask++;
+                  }
+                  if (result.getTitle().equalsIgnoreCase("without_mask")==true){
+                      contNoMask++;
+                  }
+                  if (result.getTitle().equalsIgnoreCase("mask_weared_incorrect")==true){
+                      contMaskIncorretly++;
+                  }
+
+                  canvas.drawRect(location, paint);
+
+                  cropToFrameTransform.mapRect(location);
+
+                  result.setLocation(location);
+                  mappedRecognitions.add(result);
+                }
               }
             }
+
+            runOnUiThread(
+              new Runnable() {
+                int localContMask = contMask;
+                int localContNoMask = contNoMask;
+                int localcontMaskIncorretly = contMaskIncorretly;
+
+                @Override
+                public void run() {
+                  if (ck.getCheckMask()==true) printMaskCount(localContMask);
+                  else printMaskCount(0);
+                  if (ck.getCheckNoMask()==true) printNoMaskCount(localContNoMask);
+                  else printNoMaskCount(0);
+                  if (ck.getCheckMaskIncorretly()==true) printMaskIncorrectlyCount(localcontMaskIncorretly);
+                  printMaskIncorrectlyCount(0);
+                  if (localContMask!=0 || localContNoMask!=0 || localcontMaskIncorretly!=0 && ck.getCheckMask()==true){
+                    printPercentMask(localContMask/(localContMask+localContNoMask+localcontMaskIncorretly)*100);
+                  }else printPercentMask(0);
+                }
+              });
+
+            ck.setContCheckMask(contMask);
+            contMask=0;
+            ck.setContCheckNoMask(contNoMask);
+            contNoMask=0;
+            ck.setContCheckMaskIncorretly(contMaskIncorretly);
+            contMaskIncorretly=0;
+
+
 
             tracker.trackResults(mappedRecognitions, currTimestamp);
             trackingOverlay.postInvalidate();
 
             computingDetection = false;
 
-            runOnUiThread(
-                new Runnable() {
-                  @Override
-                  public void run() {
-                    showFrameInfo(previewWidth + "x" + previewHeight);
-                    showCropInfo(cropCopyBitmap.getWidth() + "x" + cropCopyBitmap.getHeight());
-                    showInference(lastProcessingTimeMs + "ms");
-                  }
-                });
+
           }
         });
   }
@@ -238,30 +282,16 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
     return DESIRED_PREVIEW_SIZE;
   }
 
+  @Override
+  public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+
+  }
+
   // Which detection model to use: by default uses Tensorflow Object Detection API frozen
   // checkpoints.
   private enum DetectorMode {
     TF_OD_API;
   }
 
-  @Override
-  protected void setUseNNAPI(final boolean isChecked) {
-    runInBackground(
-        () -> {
-          try {
-            detector.setUseNNAPI(isChecked);
-          } catch (UnsupportedOperationException e) {
-            LOGGER.e(e, "Failed to set \"Use NNAPI\".");
-            runOnUiThread(
-                () -> {
-                  Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
-                });
-          }
-        });
-  }
 
-  @Override
-  protected void setNumThreads(final int numThreads) {
-    runInBackground(() -> detector.setNumThreads(numThreads));
-  }
 }
