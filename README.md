@@ -132,3 +132,5 @@ This is the python code (change the path constant in capital letters if you need
   print("Associated file(s) populated:")
   print(displayer.get_packed_associated_file_list())
 ```
+
+To convert to a tflite format you can also use the _tflite_no_quant.py_ and the _tflite_quant.py_ respectively for making a normal and a quantized model. Just run them as a regular python script, but remember to change the file paths inside them!
