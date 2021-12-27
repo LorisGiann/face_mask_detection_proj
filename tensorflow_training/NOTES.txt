@@ -58,7 +58,7 @@ python3
     converter.optimizations = [tf.lite.Optimize.DEFAULT]
     tflite_model = converter.convert()
     with open(_TFLITE_MODEL_PATH, 'wb') as f:
-    f.write(tflite_model)
+        f.write(tflite_model)
 
     #adding metadata
     from object_detection.utils import label_map_util
@@ -74,6 +74,7 @@ python3
         if class_id not in category_index:
             f.write('???\n')
             continue
+
     name = category_index[class_id]['name']
     f.write(name+'\n')
     f.close()
