@@ -92,7 +92,7 @@ This is the python code (change the path constant in capital letters if you need
   import tensorflow as tf
   _TFLITE_MODEL_PATH = "exported-models/my_model_tflite/model.tflite"
   converter = tf.lite.TFLiteConverter.from_saved_model('exported-models/my_model_tflite/saved_model')
-  converter.optimizations = [tf.lite.Optimize.DEFAULT]
+  #converter.optimizations = [tf.lite.Optimize.DEFAULT]
   tflite_model = converter.convert()
   with open(_TFLITE_MODEL_PATH, 'wb') as f:
       f.write(tflite_model)

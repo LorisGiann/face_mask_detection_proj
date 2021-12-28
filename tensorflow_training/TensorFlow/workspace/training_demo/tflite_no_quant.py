@@ -7,7 +7,7 @@ _TFLITE_MODEL_WITH_METADATA_PATH = "exported-models/10000_steps/my_model_tflite/
 
 
 converter = tf.lite.TFLiteConverter.from_saved_model(_SAVED_MODEL_PATH)#, signature_keys={'serving_default': {'inputs': ['image'], 'outputs': ['score', 'location', 'number of detections', 'category']}})
-converter.optimizations = [tf.lite.Optimize.DEFAULT]
+#converter.optimizations = [tf.lite.Optimize.DEFAULT]
 tflite_model = converter.convert()
 with open(_TFLITE_MODEL_PATH, 'wb') as f:
       f.write(tflite_model)
