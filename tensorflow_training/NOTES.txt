@@ -99,3 +99,24 @@ python3
 
 https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/running_on_mobile_tf2.md
 https://github.com/tensorflow/examples/tree/master/lite/examples/object_detection/android
+
+
+
+
+
+
+
+------------------------------------------ second dataset --------------------------------------------------------
+
+#change the internal file paths! this will copy the images we are interested in (the one with the label to understand wether one is wearing a mask or not) in the destination directory
+#the script can also be used to visualize the images with their ground truth boxes
+python3 filter_images.py
+
+python generate_tfrecord.py -c annotations/dataset_2/train.csv -l annotations/dataset_2/label_map.pbtxt -i images/dataset_2/test/ -o annotations/dataset_2/test.record
+python generate_tfrecord.py -c annotations/dataset_2/train.csv -l annotations/dataset_2/label_map.pbtxt -i images/dataset_2/train/ -o annotations/dataset_2/train.record
+
+python model_main_tf2.py --model_dir=models/dataset_2/ssd_mobilenet_v2_fpnlite_320x320_coco --pipeline_config_path=models/dataset_2/ssd_mobilenet_v2_fpnlite_320x320_coco/pipeline.config
+python model_main_tf2.py --model_dir=models/dataset_2/ssd_mobilenet_v2_fpnlite_320x320_coco --pipeline_config_path=models/dataset_2/ssd_mobilenet_v2_fpnlite_320x320_coco/pipeline.config --checkpoint_dir=models/dataset_2/ssd_mobilenet_v2_fpnlite_320x320_coco --eval_timeout: 10800
+tensorboard --logdir=models/dataset_2/ssd_mobilenet_v2_fpnlite_320x320_coco --bind
+
+----------------------------------------------------------------------------------------------------------------

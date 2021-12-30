@@ -21,9 +21,9 @@ def representative_data_gen(): #boh, per qualche motivo manda il convertitore in
         root = tree.getroot()
         file_name = root.find('filename').text
         img = cv2.imread(TRAIN_IMAGES_PATH + "/" + file_name)
-        img = cv2.resize(img, (300, 300))
-        #img = img / 255.0
-        img = img.astype(np.uint8)
+        img = cv2.resize(img, (320, 320))
+        img = img / 255.0
+        img = img.astype(np.float32)
         a.append(img)
     a = np.array(a)
     print(a.shape) # a is np array of 160 3D images
@@ -68,7 +68,7 @@ converter.target_spec.supported_ops = [
 ]
 #converter.inference_input_type = tf.uint8
 #converter.inference_output_type = tf.uint8
-converter.representative_dataset = representative_data_gen2
+converter.representative_dataset = representative_data_gen
 tflite_model = converter.convert()
 with open(_TFLITE_MODEL_PATH, 'wb') as f:
     f.write(tflite_model)
