@@ -9,9 +9,11 @@ import java.util.List;
 
 public class Tracking {
     private List<Point> center_points;
+    private int id_count = 0;
 
     public Tracking(){
         this.center_points= new ArrayList<Point>();
+        this.id_count = 0;
     }
 
     public double calculateDistanceBetweenPointsWithHypot(
@@ -40,21 +42,23 @@ public class Tracking {
                 if (dist<25){
                     center_points.get(i).setCx(cx);
                     center_points.get(i).setCy(cy);
-                    boxes.add(obj);
+
+                    boxes.add(new Detector.Recognition(center_points.get(i).getId(),obj.getTitle(),obj.getConfidence(), obj.getLocation()));
                     same_object_detected=true;
                     break;
                 }
             }
             //New object is detected
             if (same_object_detected==true){
-                center_points.add(new Point(cx,cy));
+                center_points.add(new Point(cx,cy,Integer.toString(id_count)));
+                id_count++;
             }
         }
         //Clean the dictionary by center points to remove IDS not used anymore
         List<Point> new_center_points=new ArrayList<Point>();
         for(Detector.Recognition obj: object_rect){
             RectF box=obj.getLocation();
-            new_center_points.add(new Point(box.centerX(),box.centerY()));
+            new_center_points.add(new Point(box.centerX(),box.centerY(),obj.getId()));
         }
         //Update dictionary with IDs not used removed
         center_points=new_center_points;
