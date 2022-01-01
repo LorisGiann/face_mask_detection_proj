@@ -116,7 +116,10 @@ python generate_tfrecord.py -c annotations/dataset_2/train.csv -l annotations/da
 python generate_tfrecord.py -c annotations/dataset_2/train.csv -l annotations/dataset_2/label_map.pbtxt -i images/dataset_2/train/ -o annotations/dataset_2/train.record
 
 python model_main_tf2.py --model_dir=models/dataset_2/ssd_mobilenet_v2_fpnlite_320x320_coco --pipeline_config_path=models/dataset_2/ssd_mobilenet_v2_fpnlite_320x320_coco/pipeline.config
-python model_main_tf2.py --model_dir=models/dataset_2/ssd_mobilenet_v2_fpnlite_320x320_coco --pipeline_config_path=models/dataset_2/ssd_mobilenet_v2_fpnlite_320x320_coco/pipeline.config --checkpoint_dir=models/dataset_2/ssd_mobilenet_v2_fpnlite_320x320_coco --eval_timeout: 10800
+python model_main_tf2.py --model_dir=models/dataset_2/ssd_mobilenet_v2_fpnlite_320x320_coco --pipeline_config_path=models/dataset_2/ssd_mobilenet_v2_fpnlite_320x320_coco/pipeline.config --checkpoint_dir=models/dataset_2/ssd_mobilenet_v2_fpnlite_320x320_coco --eval_timeout: 36000
 tensorboard --logdir=models/dataset_2/ssd_mobilenet_v2_fpnlite_320x320_coco --bind
+
+python exporter_main_v2.py --input_type image_tensor --pipeline_config_path ./models/dataset_2/ssd_mobilenet_v2_fpnlite_320x320_coco/pipeline.config --trained_checkpoint_dir ./models/dataset_2/ssd_mobilenet_v2_fpnlite_320x320_coco/ --output_directory ./exported-models/dataset_2/5000_steps/my_model
+python export_tflite_graph_tf2.py --pipeline_config_path=./models/dataset_2/ssd_mobilenet_v2_fpnlite_320x320_coco/pipeline.config --trained_checkpoint_dir=./models/dataset_2/ssd_mobilenet_v2_fpnlite_320x320_coco/ --output_directory=./exported-models/dataset_2/5000_steps/my_model_tflite
 
 ----------------------------------------------------------------------------------------------------------------
