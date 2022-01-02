@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Tracking {
+    private static final int LATENCY_FRAME_RECOGNITION = 10;
     private List<Point> center_points;
     private int id_count = 0;
 
@@ -34,12 +35,16 @@ public class Tracking {
             RectF rect=obj.getLocation();
             float cx=rect.centerX();
             float cy=rect.centerY();
+            double minDist=0;
             //Find out if that object was detected already
             boolean same_object_detected=false;
             for (int i=0;i<center_points.size();i++){
                 double dist=calculateDistanceBetweenPointsWithHypot(cx,cy,
                         center_points.get(i).getCx(),center_points.get(i).getCy());
-                if (dist<25){
+
+                minDist=Math.min(minDist,dist);
+                //check distance
+                if (dist<40){
                     center_points.get(i).setCx(cx);
                     center_points.get(i).setCy(cy);
 
@@ -48,8 +53,8 @@ public class Tracking {
                     break;
                 }
             }
-            //New object is detected
-            if (same_object_detected==true){
+            //New object is detect (check if element is distance enough
+            if (same_object_detected==true && minDist>60){
                 center_points.add(new Point(cx,cy,Integer.toString(id_count)));
                 id_count++;
             }
@@ -60,6 +65,26 @@ public class Tracking {
             RectF box=obj.getLocation();
             new_center_points.add(new Point(box.centerX(),box.centerY(),obj.getId()));
         }
+
+        //add in the center_points le element in the last LATENCY_FRAME_RECOGNITION frame
+        boolean check;
+        for (Point center: center_points){
+            if (!center.checkCont(LATENCY_FRAME_RECOGNITION)){
+                check=true;
+                for (Point new_center: new_center_points){
+                    if (new_center.getId()==center.getId()) check=false;
+                }
+                if (check==true){
+                    new_center_points.add(center);
+                }
+            }
+        }
+
+        //increase cont frame for each element
+        for (Point new_center: new_center_points){
+            new_center.increase();
+        }
+
         //Update dictionary with IDs not used removed
         center_points=new_center_points;
         return boxes;

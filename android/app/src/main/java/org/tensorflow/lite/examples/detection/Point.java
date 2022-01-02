@@ -4,11 +4,13 @@ public class Point {
     private float cx;
     private float cy;
     private String id;
+    private int cont;
 
     public Point(float cx, float cy, String id){
         this.cx=cx;
         this.cy=cy;
         this.id=id;
+        this.cont=0;
     }
 
     public void setCx(float cx) {
@@ -30,5 +32,13 @@ public class Point {
     public String getId() {return id;}
 
     public void setId(String id) {this.id = id;}
+
+    public void increase(){
+        this.cont++;
+    }
+
+    public boolean checkCont(int check){
+        return cont>check;
+    }
 
 }
