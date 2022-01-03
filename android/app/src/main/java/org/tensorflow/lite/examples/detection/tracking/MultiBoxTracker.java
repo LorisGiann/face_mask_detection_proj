@@ -162,8 +162,6 @@ public class MultiBoxTracker {
   }
 
   private void processResults(List<Recognition> results) {
-    //update element
-    results=tracking.update(results);
 
     final List<Pair<Float, Recognition>> rectsToTrack = new LinkedList<Pair<Float, Recognition>>();
 
