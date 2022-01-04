@@ -212,7 +212,7 @@ public class MultiBoxTracker {
         trackedRecognition.title = "Without mask";
       }
       trackedRecognition.color = COLORS[Integer.valueOf(potential.second.getId())%COLORS.length];
-      trackedRecognition.id = potential.second.getId();
+      trackedRecognition.id = "ID: "+potential.second.getId();
       trackedObjects.add(trackedRecognition);
 
       if (trackedObjects.size() >= COLORS.length) {
