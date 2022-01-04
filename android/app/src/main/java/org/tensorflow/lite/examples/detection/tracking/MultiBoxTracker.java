@@ -30,6 +30,8 @@ import android.util.TypedValue;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+
+import org.tensorflow.lite.examples.detection.Tracking;
 import org.tensorflow.lite.examples.detection.env.BorderedText;
 import org.tensorflow.lite.examples.detection.env.ImageUtils;
 import org.tensorflow.lite.examples.detection.env.Logger;
@@ -68,10 +70,14 @@ public class MultiBoxTracker {
   private int frameHeight;
   private int sensorOrientation;
 
+  private Tracking t;
+
   public MultiBoxTracker(final Context context) {
     for (final int color : COLORS) {
       availableColors.add(color);
     }
+
+    t=new Tracking();
 
     boxPaint.setColor(Color.RED);
     boxPaint.setStyle(Style.STROKE);
@@ -145,7 +151,7 @@ public class MultiBoxTracker {
 
       final String labelString =
           !TextUtils.isEmpty(recognition.title)
-              ? String.format("%s %.2f", recognition.title, (100 * recognition.detectionConfidence))
+              ? String.format("%s %s %.2f",recognition.id, recognition.title, (100 * recognition.detectionConfidence))
               : String.format("%.2f", (100 * recognition.detectionConfidence));
       //            borderedText.drawText(canvas, trackedPos.left + cornerSize, trackedPos.top,
       // labelString);
@@ -154,13 +160,18 @@ public class MultiBoxTracker {
     }
   }
 
-  private void processResults(final List<Recognition> results) {
+  private void processResults(List<Recognition> results) {
+
+    //update
+    results=t.update(results);
+
     final List<Pair<Float, Recognition>> rectsToTrack = new LinkedList<Pair<Float, Recognition>>();
 
     screenRects.clear();
     final Matrix rgbFrameToScreen = new Matrix(getFrameToCanvasMatrix());
 
     for (final Recognition result : results) {
+      //System.out.println(result.getId()+" "+result.getTitle()+" "+result.getConfidence());
       if (result.getLocation() == null) {
         continue;
       }
@@ -188,12 +199,15 @@ public class MultiBoxTracker {
       return;
     }
 
+
+
     for (final Pair<Float, Recognition> potential : rectsToTrack) {
       final TrackedRecognition trackedRecognition = new TrackedRecognition();
       trackedRecognition.detectionConfidence = potential.first;
       trackedRecognition.location = new RectF(potential.second.getLocation());
       trackedRecognition.title = potential.second.getTitle();
       trackedRecognition.color = COLORS[trackedObjects.size()];
+      trackedRecognition.id = potential.second.getId();
       trackedObjects.add(trackedRecognition);
 
       if (trackedObjects.size() >= COLORS.length) {
@@ -207,5 +221,6 @@ public class MultiBoxTracker {
     float detectionConfidence;
     int color;
     String title;
+    String id;
   }
 }
