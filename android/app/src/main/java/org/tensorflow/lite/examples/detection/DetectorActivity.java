@@ -208,9 +208,8 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
 
               //FILTER CLASSES based on settings
 
-              /*if ( (ck.getCheckMask()==true && result.getTitle().equalsIgnoreCase("with_mask")==true)
-                      || (ck.getCheckNoMask()==true && result.getTitle().equalsIgnoreCase("without_mask")==true)
-                      || (ck.getCheckMaskIncorretly()==true && result.getTitle().equalsIgnoreCase("mask_weared_incorrect")==true)) {*/
+              if ( (ck.getCheckMask()==true && result.getTitle().equalsIgnoreCase("mask_ok")==true)
+                      || (ck.getCheckNoMask()==true && result.getTitle().equalsIgnoreCase("no_mask")==true)) {
                 if (location != null && result.getConfidence() >= minimumConfidence) {
 
                   if (result.getTitle().equalsIgnoreCase("mask_ok")==true){
@@ -219,10 +218,6 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
                   if (result.getTitle().equalsIgnoreCase("no_mask")==true){
                       contNoMask++;
                   }
-                  if (result.getTitle().equalsIgnoreCase("mask_weared_incorrect")==true){
-                      contMaskIncorretly++;
-                  }
-
                   canvas.drawRect(location, paint);
 
                   cropToFrameTransform.mapRect(location);
@@ -230,14 +225,13 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
                   result.setLocation(location);
                   mappedRecognitions.add(result);
                 }
-              /*}*/
+              }
             }
 
             runOnUiThread(
               new Runnable() {
                 int localContMask = contMask;
                 int localContNoMask = contNoMask;
-                int localcontMaskIncorretly = contMaskIncorretly;
 
                 @Override
                 public void run() {
@@ -245,10 +239,8 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
                   else printMaskCount(0);
                   if (ck.getCheckNoMask()==true) printNoMaskCount(localContNoMask);
                   else printNoMaskCount(0);
-                  if (ck.getCheckMaskIncorretly()==true) printMaskIncorrectlyCount(localcontMaskIncorretly);
-                  printMaskIncorrectlyCount(0);
-                  if (localContMask!=0 || localContNoMask!=0 || localcontMaskIncorretly!=0 && ck.getCheckMask()==true){
-                    printPercentMask(localContMask/(localContMask+localContNoMask+localcontMaskIncorretly)*100);
+                  if ((localContMask!=0 || localContNoMask!=0 ) && ck.getCheckMask()==true){
+                    printPercentMask(localContMask/(localContMask+localContNoMask)*100);
                   }else printPercentMask(0);
                 }
               });
@@ -257,8 +249,6 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
             contMask=0;
             ck.setContCheckNoMask(contNoMask);
             contNoMask=0;
-            ck.setContCheckMaskIncorretly(contMaskIncorretly);
-            contMaskIncorretly=0;
 
 
 

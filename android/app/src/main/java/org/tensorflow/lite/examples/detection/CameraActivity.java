@@ -81,7 +81,6 @@ public abstract class CameraActivity extends AppCompatActivity
   private CheckDetect ck;
   private TextView contMaskView;
   private TextView contNoMaskView;
-  private TextView contMaskIncorretlyView;
   private TextView percentMask;
 
   @Override
@@ -102,13 +101,11 @@ public abstract class CameraActivity extends AppCompatActivity
     ck=CheckDetect.getInstance();
     contMaskView= findViewById(R.id.contMask);
     contNoMaskView= findViewById(R.id.contNoMask);
-    contMaskIncorretlyView= findViewById(R.id.contMaskIncorretly);
     percentMask =findViewById(R.id.maskPercent);
 
     Typeface type = Typeface.createFromAsset(getAssets(),"fonts/BebasNeue-Regular.ttf");
     contMaskView.setTypeface(type);
     contNoMaskView.setTypeface(type);
-    contMaskIncorretlyView.setTypeface(type);
     percentMask.setTypeface(type);
 
     findViewById(R.id.fatherCamera).setOnTouchListener(new OnSwipeTouchListener(CameraActivity.this) {
@@ -464,6 +461,5 @@ public abstract class CameraActivity extends AppCompatActivity
 
   public void printMaskCount(int count){ contMaskView.setText(String.valueOf(count)); }
   public void printNoMaskCount(int count){ contNoMaskView.setText(String.valueOf(count)); }
-  public void printMaskIncorrectlyCount(int count){ contMaskIncorretlyView.setText(String.valueOf(count)); }
   public void printPercentMask(int count){ percentMask.setText(String.valueOf(count)+"%");}
 }
