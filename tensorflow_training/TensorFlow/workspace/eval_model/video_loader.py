@@ -17,14 +17,14 @@ import tensorflow as tf
 import cv2
 tf.get_logger().setLevel('ERROR')
 
-PATH_TO_MODEL_DIR="/home/loris/Desktop/python_tests/face_mask_detection_proj/tensorflow_training/TensorFlow/workspace/training_demo/exported_models/dataset_1/10000_steps/my_model"
+PATH_TO_MODEL_DIR="/home/loris/Desktop/python_tests/face_mask_detection_proj/tensorflow_training/TensorFlow/workspace/training_demo/exported_models/dataset_2_binary/10000_steps/my_model"
 PATH_TO_CFG=PATH_TO_MODEL_DIR+"/pipeline.config"
 PATH_TO_SAVED_MODEL = PATH_TO_MODEL_DIR + "/saved_model"
 PATH_TO_CKPT=PATH_TO_MODEL_DIR+"/checkpoint"
-PATH_TO_LABELS = "/home/loris/Desktop/python_tests/face_mask_detection_proj/tensorflow_training/TensorFlow/workspace/training_demo/annotations/dataset_2/label_map.pbtxt"
+PATH_TO_LABELS = "/home/loris/Desktop/python_tests/face_mask_detection_proj/tensorflow_training/TensorFlow/workspace/training_demo/annotations/dataset_2_binary/label_map.pbtxt"
 PATH_TO_VIDEO = "/home/loris/Desktop/python_tests/face_mask_detection_proj/tensorflow_training/TensorFlow/workspace/eval_model/5.mp4"
 
-labelMapper = [102, 65, 98] #green, yellow, red
+labelMapper = [102, 98] #green, red
 
 # Enable GPU dynamic memory allocation
 gpus = tf.config.experimental.list_physical_devices('GPU')
@@ -89,7 +89,7 @@ while True:
           track_ids = track_ids,
           use_normalized_coordinates=True,
           max_boxes_to_draw=200,
-          min_score_thresh=.50,
+          min_score_thresh=.98,
           agnostic_mode=False)
 
     # Display output
