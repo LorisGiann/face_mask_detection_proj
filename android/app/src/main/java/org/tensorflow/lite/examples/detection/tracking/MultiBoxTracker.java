@@ -206,7 +206,11 @@ public class MultiBoxTracker {
       final TrackedRecognition trackedRecognition = new TrackedRecognition();
       trackedRecognition.detectionConfidence = potential.first;
       trackedRecognition.location = new RectF(potential.second.getLocation());
-      trackedRecognition.title = potential.second.getTitle();
+      if (potential.second.getTitle().equalsIgnoreCase("mask_ok")){
+        trackedRecognition.title = "With mask";
+      }else{
+        trackedRecognition.title = "Without mask";
+      }
       trackedRecognition.color = COLORS[Integer.valueOf(potential.second.getId())%COLORS.length];
       trackedRecognition.id = potential.second.getId();
       trackedObjects.add(trackedRecognition);
