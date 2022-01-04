@@ -14,10 +14,10 @@ import java.util.List;
 import java.util.Map;
 
 public class Tracking {
-    private static final int LATENCY_FRAME_RECOGNITION = 10;
-    private static final int MIN_CONFIDENCE_NEW_OBJ = 95;
-    private static final int MIN_CONFIDENCE_OBJ = 85;
-    private static final int VAL_MIN = 100;
+    private static final float REMOVE_AFTER_N_FRAMES = 15;
+    private static final float MIN_CONFIDENCE_NEW_OBJ = 0.95f;
+    private static final float MIN_CONFIDENCE_OBJ = 0.85f;
+    private static final float VAL_MIN = 100;
     private List<TrackedObject> trackedObjects;
     private int contID;
     private int progressiveFrame;
@@ -36,9 +36,13 @@ public class Tracking {
 
         float ac = Math.abs(y2 - y1);
         float cb = Math.abs(x2 - x1);
-
         return Math.hypot(ac, cb);
     }
+
+    public List<TrackedObject> getTrackedObjects() {
+        return trackedObjects;
+    }
+
     public void update(List<Detector.Recognition> object_rect){
         List<Detector.Recognition> new_object_rect=new ArrayList<Detector.Recognition>();
 
@@ -49,44 +53,48 @@ public class Tracking {
 
         //creation matrix using guava table
         Table<Detector.Recognition, TrackedObject, Double> distanceTable = HashBasedTable.create();
+        List<Detector.Recognition> remainingNewObjects = new ArrayList<>(); //these are the same objects labeling each row of the table, but these remain in the list event when no trackedObjects is left on the table!
         for (Detector.Recognition new_object: new_object_rect){
+            remainingNewObjects.add(new_object);
             for (TrackedObject trackedObject: trackedObjects){
                 RectF rect=new_object.getLocation();
                 float cx1=rect.centerX();
                 float cy1=rect.centerY();
-                float cx2=trackedObject.getTrackedRecord().get(trackedObject.getTrackedRecord().size() - 1).getCx();
-                float cy2=trackedObject.getTrackedRecord().get(trackedObject.getTrackedRecord().size() - 1).getCx();
+                float cx2=trackedObject.getPointHistory().get(trackedObject.getPointHistory().size() - 1).getCx();
+                float cy2=trackedObject.getPointHistory().get(trackedObject.getPointHistory().size() - 1).getCy();
                 distanceTable.put(new_object,trackedObject,Double.valueOf(calculateDistanceBetweenPointsWithHypot(cx1,cy1,cx2,cy2)));
             }
         }
 
-        boolean onlyDistanceObj=false;
+        boolean onlyDistantObj=false;
 
-        while(!onlyDistanceObj || distanceTable.isEmpty()){
-            onlyDistanceObj=true;
+        while(!onlyDistantObj && !distanceTable.isEmpty()){ //repeat the process until no new_object or no trackedObject element is remained, or if elements are too distant
+            Table<Detector.Recognition, TrackedObject, Double> stepDistanceTable = HashBasedTable.create(distanceTable);
+            onlyDistantObj=true;
             //algorithm new_object min distance
-            for (Detector.Recognition new_object: distanceTable.rowKeySet()){
-                Map<TrackedObject,Double> mapRow=distanceTable.row(new_object);
+            for (Detector.Recognition new_object: stepDistanceTable.rowKeySet()){
+                Map<TrackedObject,Double> mapRow=stepDistanceTable.row(new_object);
                 Double minRow = Collections.min(mapRow.values());
 
                 if (minRow<VAL_MIN){
-                    onlyDistanceObj=false;
+                    onlyDistantObj=false;
                     for (TrackedObject trackedObject: mapRow.keySet()){
-                        if (mapRow.get(trackedObject)==minRow){
+                        if (minRow.equals(mapRow.get(trackedObject))){
                             //found trackedObject
-                            Map<Detector.Recognition ,Double> mapColumn=distanceTable.column(trackedObject);
+                            Map<Detector.Recognition ,Double> mapColumn=stepDistanceTable.column(trackedObject);
                             Double minColumn = Collections.min(mapColumn.values());
 
                             for (Detector.Recognition new_obj:mapColumn.keySet()){
-                                if (mapColumn.get(new_obj)==minColumn){
+                                if (minColumn.equals(mapRow.get(trackedObject))){
 
                                     if (new_obj.equals(new_object)){
                                         //found corrispondance
-                                        Point tmp =new Point(new_obj.getLocation().centerX(),new_obj.getLocation().centerY());
-                                        trackedObject.setTrackedRecord(tmp);
+                                        Point tmp = new Point(new_obj.getLocation().centerX(),new_obj.getLocation().centerY());
+                                        trackedObject.setNewPoint(tmp, progressiveFrame);
                                         //delete distance
                                         distanceTable.row(new_obj).clear();
                                         distanceTable.column(trackedObject).clear();
+                                        remainingNewObjects.remove(new_obj);
                                     }
 
                                 }
@@ -97,23 +105,24 @@ public class Tracking {
             }
         }
 
-        //Add new object
-        for (Detector.Recognition new_object: distanceTable.rowKeySet()){
+        //Add remaining new object
+        for (Detector.Recognition new_object: remainingNewObjects){
             if (new_object.getConfidence()>MIN_CONFIDENCE_NEW_OBJ){
                 Point tmp =new Point(new_object.getLocation().centerX(),new_object.getLocation().centerY());
                 TrackedObject to=new TrackedObject(String.valueOf(contID));
                 contID++;
-                to.setTrackedRecord(tmp);
+                to.setNewPoint(tmp, progressiveFrame);
                 trackedObjects.add(to);
             }
         }
 
         //Check last update tracked object
-        for(TrackedObject to: trackedObjects){
-            if (progressiveFrame-to.getCont()>LATENCY_FRAME_RECOGNITION){
+        for(TrackedObject to: new ArrayList<>(trackedObjects)){
+            if (progressiveFrame-to.getLastUpdateFrameNum()> REMOVE_AFTER_N_FRAMES){
                 trackedObjects.remove(to);
             }
         }
+        progressiveFrame++;
 
     }
 }
