@@ -1,3 +1,2 @@
-with_mask
-mask_weared_incorrect
-without_mask
+mask_ok
+no_mask
