@@ -16,8 +16,8 @@ import gc
 #labels: ['balaclava_ski_mask', 'eyeglasses', 'face_no_mask', 'face_other_covering', 'face_shield', 'face_with_mask', 'face_with_mask_incorrect', 'gas_mask', 'goggles', 'hair_net', 'hat', 'helmet', 'hijab_niqab', 'hood', 'mask_colorful', 'mask_surgical', 'other', 'scarf_bandana', 'sunglasses', 'turban']
 
 VISUALIZE_IMGS = True #displays images with groundtruth boxes
-FROM = 1000
-TO = 2000
+FROM = 4000
+TO = 5000
 
 COPY_IMGS_TO_DEST = False #copy the selected images to the destination path
 DEST_PATH = "/home/loris/Documents/face_mask_detection_proj/tensorflow_training/TensorFlow/workspace/training_demo/tmp/selectedImages"

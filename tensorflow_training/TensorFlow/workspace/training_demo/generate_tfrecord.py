@@ -69,11 +69,11 @@ labelMapper = { #converts the original labels in the dataset in less labes types
     "face_with_mask": "mask_ok",
     "face_no_mask": "no_mask",
     "face_other_covering": "no_mask",
-    "face_with_mask_incorrect": "mask_incorrect"
+    "face_with_mask_incorrect": "mask_ok"
 }
 
-newWidth = 640
-newHeight = 640
+newWidth = 320
+newHeight = 320
 # ---------------------------------------------- IMAGE PREPROCESSING ---------------------------------------------------------
 data_augmentation_options = [
     (preprocessor.random_horizontal_flip, { #boh sembra non funzionare
@@ -85,7 +85,8 @@ data_augmentation_options = [
     (preprocessor.resize_to_range, {
         'min_dimension': newWidth,
         'max_dimension': newHeight,
-        'pad_to_max_dimension': False #looks like this option does not adjust the boxes positions! to add padding we use the options down here
+        'pad_to_max_dimension': False, #looks like this option does not adjust the boxes positions! to add padding we use the options down here
+        'method': 'area'
     }),
     (preprocessor.random_pad_image, {
         'min_image_size': (newWidth,newHeight),
@@ -120,7 +121,7 @@ def showImgTensor(tensor_dict):
     count=0
     for box in boxes:
         cl=classes[count].numpy()
-        rect = patches.Rectangle((box[1]*w, box[0]*h), (box[3]-box[1])*w, (box[2]-box[0])*h, linewidth=1, edgecolor=(cl[2], cl[0], cl[1], 1), facecolor='none')
+        rect = patches.Rectangle((box[1]*w, box[0]*h), (box[3]-box[1])*w, (box[2]-box[0])*h, linewidth=1, edgecolor=(cl[1], cl[0], 0), facecolor='none')
         ax.add_patch(rect)
         count+=1
     plt.show()
@@ -157,10 +158,6 @@ def create_tf_example(filePath, imgData):
             imageValidBoxes+=1
     if imageValidBoxes<=0:
         return None #this image does not contain any box that we need!
-
-
-    #showImgRaw(image, xmins, ymins, xmaxs, ymaxs, classes_text)
-    #showImgRawRaw(image, xmins, ymins, xmaxs, ymaxs, classes_text)
 
     boxes = zip(ymins, xmins, ymaxs, xmaxs)
     tensor_dict = {

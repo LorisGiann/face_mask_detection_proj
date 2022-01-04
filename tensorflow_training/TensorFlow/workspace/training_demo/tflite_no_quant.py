@@ -1,9 +1,15 @@
 import tensorflow as tf
-_SAVED_MODEL_PATH = "exported-models/10000_steps/my_model_tflite_quantized/saved_model"
-_TFLITE_MODEL_PATH = "exported-models/10000_steps/my_model_tflite/model.tflite"
-_ODT_LABEL_MAP_PATH = "annotations/label_map.pbtxt"
-_TFLITE_LABEL_PATH = "exported-models/10000_steps/my_model_tflite/tflite_label_map.txt"
-_TFLITE_MODEL_WITH_METADATA_PATH = "exported-models/10000_steps/my_model_tflite/model_with_metadata.tflite"
+_SAVED_MODEL_PATH = "exported-models/dataset_2_binary/10000_steps/my_model_tflite/saved_model" #in
+_TFLITE_MODEL_PATH = "exported-models/dataset_2_binary/10000_steps/my_model_tflite/model.tflite" #out
+_ODT_LABEL_MAP_PATH = "annotations/dataset_2_binary/label_map.pbtxt" #in
+_TFLITE_LABEL_PATH = "exported-models/dataset_2_binary/10000_steps/my_model_tflite/tflite_label_map.txt" #out
+_TFLITE_MODEL_WITH_METADATA_PATH = "exported-models/dataset_2_binary/10000_steps/my_model_tflite/model_with_metadata.tflite" #out
+
+#_SAVED_MODEL_PATH = "exported-models/dataset_2_binary/5000_steps/my_model_tflite/saved_model" #in
+#_TFLITE_MODEL_PATH = "exported-models/dataset_2_binary/5000_steps/my_model_tflite/model.tflite" #out
+#_ODT_LABEL_MAP_PATH = "annotations/dataset_2_binary/label_map.pbtxt" #in
+#_TFLITE_LABEL_PATH = "exported-models/dataset_2_binary/5000_steps/my_model_tflite/tflite_label_map.txt" #out
+#_TFLITE_MODEL_WITH_METADATA_PATH = "exported-models/dataset_2_binary/5000_steps/my_model_tflite/model_with_metadata.tflite" #out
 
 
 converter = tf.lite.TFLiteConverter.from_saved_model(_SAVED_MODEL_PATH)#, signature_keys={'serving_default': {'inputs': ['image'], 'outputs': ['score', 'location', 'number of detections', 'category']}})
@@ -16,7 +22,7 @@ with open(_TFLITE_MODEL_PATH, 'wb') as f:
 from object_detection.utils import label_map_util
 from object_detection.utils import config_util
 from object_detection.builders import model_builder
-N_CLASSES = 3
+N_CLASSES = 2
 
 category_index = label_map_util.create_category_index_from_labelmap(_ODT_LABEL_MAP_PATH)
 f = open(_TFLITE_LABEL_PATH, 'w')
