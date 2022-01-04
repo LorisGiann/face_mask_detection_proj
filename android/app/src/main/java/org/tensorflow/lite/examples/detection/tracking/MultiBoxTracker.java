@@ -70,6 +70,7 @@ public class MultiBoxTracker {
   private int frameHeight;
   private int sensorOrientation;
 
+
   private Tracking t;
 
   public MultiBoxTracker(final Context context) {
@@ -163,7 +164,7 @@ public class MultiBoxTracker {
   private void processResults(List<Recognition> results) {
 
     //update
-    results=t.update(results);
+    results = t.update(results);
 
     final List<Pair<Float, Recognition>> rectsToTrack = new LinkedList<Pair<Float, Recognition>>();
 

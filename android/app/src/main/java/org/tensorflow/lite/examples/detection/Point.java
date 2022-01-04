@@ -1,21 +1,14 @@
 package org.tensorflow.lite.examples.detection;
 
+import java.util.Objects;
+
 public class Point {
+
     private float cx;
     private float cy;
-    private String id;
 
-    public Point(float cx, float cy, String id){
-        this.cx=cx;
-        this.cy=cy;
-        this.id=id;
-    }
-
-    public void setCx(float cx) {
+    public Point(float cx, float cy) {
         this.cx = cx;
-    }
-
-    public void setCy(float cy) {
         this.cy = cy;
     }
 
@@ -23,12 +16,36 @@ public class Point {
         return cx;
     }
 
+    public void setCx(float cx) {
+        this.cx = cx;
+    }
+
     public float getCy() {
         return cy;
     }
 
-    public String getId() {return id;}
+    public void setCy(float cy) {
+        this.cy = cy;
+    }
 
-    public void setId(String id) {this.id = id;}
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Point point = (Point) o;
+        return Float.compare(point.cx, cx) == 0 && Float.compare(point.cy, cy) == 0;
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(cx, cy);
+    }
+
+    @Override
+    public String toString() {
+        return "Point{" +
+                "cx=" + cx +
+                ", cy=" + cy +
+                '}';
+    }
 }
