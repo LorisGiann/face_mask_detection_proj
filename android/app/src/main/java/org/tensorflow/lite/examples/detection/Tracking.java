@@ -6,6 +6,7 @@ import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 
 
+import org.tensorflow.lite.examples.detection.env.Logger;
 import org.tensorflow.lite.examples.detection.tflite.Detector;
 
 import java.util.ArrayList;
@@ -18,14 +19,18 @@ public class Tracking {
     private static final float MIN_CONFIDENCE_NEW_OBJ = 0.95f;
     private static final float MIN_CONFIDENCE_OBJ = 0.85f;
     private static final float VAL_MIN = 100;
+    private static final float X_COLUMN_CONT_PASS=200;
     private List<TrackedObject> trackedObjects;
     private int contID;
     private int progressiveFrame;
+    private int contEntrance;
+    private final Logger logger = new Logger();
 
     public Tracking(){
         this.trackedObjects = new ArrayList<TrackedObject>();
         this.contID=1;
         this.progressiveFrame=0;
+        this.contEntrance=0;
     }
 
     private double calculateDistanceBetweenPointsWithHypot(
@@ -126,7 +131,25 @@ public class Tracking {
             }
         }
         progressiveFrame++;
-
+        this.contPass();
+        logger.w("CONT PASS: "+this.contEntrance);
         return out_obj_rect;
     }
+
+    public void contPass() {
+        for(TrackedObject to: trackedObjects){
+            //get last two point from history trackedObject
+            if (to.getPointHistory().size()>1 && to.getLastUpdateFrameNum()==progressiveFrame){
+                Point p1=to.getPointHistory().get(to.getPointHistory().size()-1);
+                Point p2=to.getPointHistory().get(to.getPointHistory().size()-2);
+                if(p1.getCx()>=X_COLUMN_CONT_PASS && p2.getCx()<X_COLUMN_CONT_PASS){
+                    this.contEntrance++;
+                }
+                if(p1.getCx()<X_COLUMN_CONT_PASS && p2.getCx()>=X_COLUMN_CONT_PASS){
+                    this.contEntrance--;
+                }
+            }
+        }
+    }
+
 }
