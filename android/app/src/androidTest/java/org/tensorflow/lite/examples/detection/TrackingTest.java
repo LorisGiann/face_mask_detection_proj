@@ -6,29 +6,16 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
-import java.util.Set;
 
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.Table;
-import static org.junit.Assert.*;
 import static org.junit.Assert.assertTrue;
 
 import android.graphics.RectF;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.tensorflow.lite.examples.detection.tflite.Detector;
+import org.tensorflow.lite.examples.detection.tracking.Point;
+import org.tensorflow.lite.examples.detection.tracking.TrackedObject;
+import org.tensorflow.lite.examples.detection.tracking.Tracking;
 
 public class TrackingTest {
 

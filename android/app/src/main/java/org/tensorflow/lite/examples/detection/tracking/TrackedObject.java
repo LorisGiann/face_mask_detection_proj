@@ -1,4 +1,4 @@
-package org.tensorflow.lite.examples.detection;
+package org.tensorflow.lite.examples.detection.tracking;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;

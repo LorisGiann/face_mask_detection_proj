@@ -27,11 +27,12 @@ import android.graphics.RectF;
 import android.text.TextUtils;
 import android.util.Pair;
 import android.util.TypedValue;
+
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
-import org.tensorflow.lite.examples.detection.Tracking;
 import org.tensorflow.lite.examples.detection.env.BorderedText;
 import org.tensorflow.lite.examples.detection.env.ImageUtils;
 import org.tensorflow.lite.examples.detection.env.Logger;
@@ -70,8 +71,8 @@ public class MultiBoxTracker {
   private int frameHeight;
   private int sensorOrientation;
 
-
   private Tracking t;
+  private Crossing c;
 
   public MultiBoxTracker(final Context context) {
     for (final int color : COLORS) {
@@ -79,6 +80,7 @@ public class MultiBoxTracker {
     }
 
     t=new Tracking();
+    c=new Crossing();
 
     boxPaint.setColor(Color.RED);
     boxPaint.setStyle(Style.STROKE);
@@ -133,6 +135,8 @@ public class MultiBoxTracker {
         Math.min(
             canvas.getHeight() / (float) (rotated ? frameWidth : frameHeight),
             canvas.getWidth() / (float) (rotated ? frameHeight : frameWidth));
+    c.setCanvasSize(canvas.getWidth(), canvas.getHeight());
+    c.setConversionMatrix(getFrameToCanvasMatrix());
     frameToCanvasMatrix =
         ImageUtils.getTransformationMatrix(
             frameWidth,
@@ -159,12 +163,38 @@ public class MultiBoxTracker {
       borderedText.drawText(
           canvas, trackedPos.left + cornerSize, trackedPos.top, labelString + "%", boxPaint);
     }
+
+    c.drawCrossingLine(canvas, Color.WHITE);
+
+    //draw all the tracks of the objects
+    for(TrackedObject trackedObject: t.getTrackedObjects()){
+      List<Point> originalPoints = trackedObject.getPointHistory();
+      List<Point> scaledPoints = new ArrayList<>();
+      for (Point p : originalPoints){
+        float f[] = {p.getCx(), p.getCy()};
+        getFrameToCanvasMatrix().mapPoints(f);
+        scaledPoints.add(new Point(f[0], f[1]));
+      }
+      Paint paint = new Paint();
+      paint.setStrokeWidth(3);
+      paint.setColor(COLORS[Integer.valueOf(trackedObject.getId())%COLORS.length]);
+      for (int i=0; i<scaledPoints.size()-1; i++) {
+        canvas.drawLine(
+                scaledPoints.get(i).getCx(),
+                scaledPoints.get(i).getCy(),
+                scaledPoints.get(i+1).getCx(),
+                scaledPoints.get(i+1).getCy(),
+                paint
+          );
+      }
+    }
   }
 
   private void processResults(List<Recognition> results) {
 
     //update
     results = t.update(results);
+    c.update(t.getTrackedObjects(), t.getLastProcessedFrame());
 
     final List<Pair<Float, Recognition>> rectsToTrack = new LinkedList<Pair<Float, Recognition>>();
 
