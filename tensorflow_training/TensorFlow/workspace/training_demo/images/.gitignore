@@ -1,5 +1,1 @@
-#keep the folders without their content
-test/**
-train/**
-!/test/.gitkeep
-!/train/.gitkeep
+/dataset_2_old/

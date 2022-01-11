@@ -18,11 +18,13 @@ from object_detection.core import standard_fields as fields
 from object_detection.utils import config_util
 from object_detection.utils import test_case
 
-num_classes = 3
-image_num = 54
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'    # Suppress TensorFlow logging (1)
+
+num_classes = 2
+image_num = 5#66
 #attenzione: se l'immagine non contine l'oggetto viene lanciata eccezione
 
-TFRecords_file = "annotations/train.record" #output file for TF record file
+TFRecords_file = "annotations/dataset_2_binary/test.record" #output file for TF record file
 
 def parse_record(record):
     name_to_features = {
@@ -89,7 +91,7 @@ def showImgTensor(tensor_dict):
     count=0
     for box in boxes:
         cl=classes[count].numpy()
-        rect = patches.Rectangle((box[1]*w, box[0]*h), (box[3]-box[1])*w, (box[2]-box[0])*h, linewidth=1, edgecolor=(cl[2], cl[0], cl[1], 1), facecolor='none')
+        rect = patches.Rectangle((box[1]*w, box[0]*h), (box[3]-box[1])*w, (box[2]-box[0])*h, linewidth=1, edgecolor=(cl[1], cl[0], 0, 1), facecolor='none')
         ax.add_patch(rect)
         count+=1
     plt.show()
@@ -110,28 +112,27 @@ class DataAugmentationFnTest(test_case.TestCase):
         data_augmentation_options = [
             (preprocessor.random_horizontal_flip, { #boh sembra non funzionare
             }),
+            #(preprocessor.resize_to_range, {
+            #    'min_dimension': 320,
+            #    'max_dimension': 320,
+            #    'pad_to_max_dimension': False #looks like this option does not adjust the boxes #positions! to add padding we use the options down here
+            #}),
+            #(preprocessor.random_pad_image, {
+            #    'min_image_size': (320,320),
+            #    'max_image_size': (320,320),
+            #    'center_pad': True
+            #}),
+            #(preprocessor.random_crop_image, {
+            #    'min_object_covered': 0.0,
+            #    #'aspect_ratio_range': (0.75,3.0),
+            #    'area_range': (0.3, 1),
+            #    'aspect_ratio_range': (0.8,1.2),
+            #    'overlap_thresh': 0.3
+            #}),
             #(preprocessor.resize_image, {
             #    'new_height': 320,
-            #    'new_width': 320
-            #}),
-            (preprocessor.resize_to_range, {
-                'min_dimension': 320,
-                'max_dimension': 320,
-                'pad_to_max_dimension': False #looks like this option does not adjust the boxes positions! to add padding we use the options down here
-            }),
-            (preprocessor.random_pad_image, {
-                'min_image_size': (320,320),
-                'max_image_size': (320,320),
-                'center_pad': True
-            }),
-            #(preprocessor.random_crop_image, {
-            #    #'min_object_covered': 0.0,
-            #    'min_object_covered': 1.0,
-            #    #'aspect_ratio_range': (0.75,3.0),
-            #    #'area_range': (0.75, 1.0),
-            #    'aspect_ratio_range': (1,1),
-            #    'area_range': (1, 1),
-            #    'overlap_thresh': 0.0
+            #    'new_width': 320,
+            #    'method': 'area'
             #})
         ]
         data_augmentation_fn = functools.partial(inputs.augment_input_data, data_augmentation_options=data_augmentation_options)

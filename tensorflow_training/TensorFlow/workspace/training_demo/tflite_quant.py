@@ -1,4 +1,5 @@
-import os
+from os import listdir
+from os.path import isfile, join
 import glob
 import io
 import xml.etree.ElementTree as ET
@@ -6,29 +7,27 @@ import cv2
 import numpy as np
 import tensorflow as tf
 
-TRAIN_XML_IMAGES_PATH="images/train"
-TRAIN_IMAGES_PATH = TRAIN_XML_IMAGES_PATH
+IMG_FILE_PATH="images/dataset_2/train"
+
+imgFiles = [f for f in listdir(IMG_FILE_PATH) if isfile(join(IMG_FILE_PATH, f)) and (f.endswith('.jpg') or f.endswith('.png'))]
 
 def representative_data_gen(): #boh, per qualche motivo manda il convertitore in errore
     a = []
     i = 0
-    for xml_file in glob.glob(TRAIN_XML_IMAGES_PATH + '/*.xml'):
-        if i>500:
+    for xml_file in glob.glob(IMG_FILE_PATH + '/*.xml'):
+        if i>1000:
             break
 
         i+=1
-        tree = ET.parse(xml_file)
-        root = tree.getroot()
-        file_name = root.find('filename').text
-        img = cv2.imread(TRAIN_IMAGES_PATH + "/" + file_name)
-        img = cv2.resize(img, (300, 300))
-        #img = img / 255.0
-        img = img.astype(np.uint8)
+        img = cv2.imread(imgFiles)
+        img = cv2.resize(img, (320, 320))
+        img = img / 255.0
+        img = img.astype(np.float32)
         a.append(img)
     a = np.array(a)
     print(a.shape) # a is np array of 160 3D images
     img = tf.data.Dataset.from_tensor_slices(a).batch(1)
-    for i in img.take(100):
+    for i in img.take(1000):
         #print(i)
         yield [i]
 
@@ -54,9 +53,20 @@ def representative_data_gen2():
         image = tf.expand_dims(image, 0)
         yield [image]
 
+#_SAVED_MODEL_PATH = "exported-models/dataset_2_binary/5000_steps/my_model_tflite/saved_model" #in
+#_TFLITE_MODEL_PATH = "exported-models/dataset_2_binary/5000_steps/my_model_tflite_quantized/model.tflite" #out
+#_ODT_LABEL_MAP_PATH = "annotations/dataset_2_binary/label_map.pbtxt" #in
+#_TFLITE_LABEL_PATH = "exported-models/dataset_2_binary/5000_steps/my_model_tflite_quantized/tflite_label_map.txt" #out
+#_TFLITE_MODEL_WITH_METADATA_PATH = "exported-models/dataset_2_binary/5000_steps/my_model_tflite_quantized/model_with_metadata.tflite" #out
+
+_SAVED_MODEL_PATH = "exported-models/dataset_2_binary/10000_steps/my_model_tflite/saved_model" #in
+_TFLITE_MODEL_PATH = "exported-models/dataset_2_binary/10000_steps/my_model_tflite_quantized/model.tflite" #out
+_ODT_LABEL_MAP_PATH = "annotations/dataset_2_binary/label_map.pbtxt" #in
+_TFLITE_LABEL_PATH = "exported-models/dataset_2_binary/10000_steps/my_model_tflite_quantized/tflite_label_map.txt" #out
+_TFLITE_MODEL_WITH_METADATA_PATH = "exported-models/dataset_2_binary/10000_steps/my_model_tflite_quantized/model_with_metadata.tflite" #out
+N_CLASSES = 2
+
 #tesorflow lite conversion
-_SAVED_MODEL_PATH = "exported-models/10000_steps/my_model_tflite_quantized/saved_model"
-_TFLITE_MODEL_PATH = "exported-models/10000_steps/my_model_tflite_quantized/model.tflite"
 converter = tf.lite.TFLiteConverter.from_saved_model(_SAVED_MODEL_PATH)#, signature_keys={'serving_default': {'inputs': ['image'], 'outputs': ['score', 'location', 'number of detections', 'category']}})
 converter.optimizations = [tf.lite.Optimize.DEFAULT]
 converter.allow_custom_ops = True
@@ -68,7 +78,7 @@ converter.target_spec.supported_ops = [
 ]
 #converter.inference_input_type = tf.uint8
 #converter.inference_output_type = tf.uint8
-converter.representative_dataset = representative_data_gen2
+converter.representative_dataset = representative_data_gen
 tflite_model = converter.convert()
 with open(_TFLITE_MODEL_PATH, 'wb') as f:
     f.write(tflite_model)
@@ -78,10 +88,6 @@ with open(_TFLITE_MODEL_PATH, 'wb') as f:
 from object_detection.utils import label_map_util
 from object_detection.utils import config_util
 from object_detection.builders import model_builder
-_ODT_LABEL_MAP_PATH = "annotations/label_map.pbtxt"
-_TFLITE_LABEL_PATH = "exported-models/10000_steps/my_model_tflite_quantized/tflite_label_map.txt"
-_TFLITE_MODEL_WITH_METADATA_PATH = "exported-models/10000_steps/my_model_tflite_quantized/model_with_metadata.tflite"
-N_CLASSES = 3
 
 category_index = label_map_util.create_category_index_from_labelmap(_ODT_LABEL_MAP_PATH)
 f = open(_TFLITE_LABEL_PATH, 'w')
