@@ -113,7 +113,7 @@ public class Tracking {
         for (Detector.Recognition new_object : remainingNewObjects) {
             if (new_object.getConfidence() > MIN_CONFIDENCE_NEW_OBJ) {
                 Point tmp = new Point(new_object.getLocation().centerX(), new_object.getLocation().centerY());
-                TrackedObject to = new TrackedObject(String.valueOf(contID));
+                TrackedObject to = new TrackedObject(String.valueOf(contID),new_object.getTitle());
                 contID++;
                 to.setNewPoint(tmp, progressiveFrame);
                 trackedObjects.add(to);

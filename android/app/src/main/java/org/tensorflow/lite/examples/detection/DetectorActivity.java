@@ -40,6 +40,7 @@ import org.tensorflow.lite.examples.detection.env.ImageUtils;
 import org.tensorflow.lite.examples.detection.env.Logger;
 import org.tensorflow.lite.examples.detection.tflite.Detector;
 import org.tensorflow.lite.examples.detection.tflite.TFLiteObjectDetectionAPIModel;
+import org.tensorflow.lite.examples.detection.tracking.Crossing;
 import org.tensorflow.lite.examples.detection.tracking.MultiBoxTracker;
 
 /**
@@ -84,7 +85,9 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
   //CONT CLASSES
   private int contMask=0;
   private int contNoMask=0;
-  private int contMaskIncorretly=0;
+
+  //CONT CROSSING CLASSES
+  private Crossing c=Crossing.getInstance();
 
   @Override
   public void onPreviewSizeChosen(final Size size, final int rotation) {
@@ -232,6 +235,8 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
               new Runnable() {
                 int localContMask = contMask;
                 int localContNoMask = contNoMask;
+                int localContMaskCrossing = c.getCountMask();
+                int localContNoMaskCrossing = c.getCountNoMask();
 
                 @Override
                 public void run() {
@@ -239,6 +244,17 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
                   else printMaskCount(0);
                   if (ck.getCheckNoMask()==true) printNoMaskCount(localContNoMask);
                   else printNoMaskCount(0);
+
+                  //CHECK CHECK BOX CROSSING
+                  if (ck.getCheckModeTracking()==true){
+                    printCountMaskCrossing(localContMaskCrossing);
+                    printCountNoMaskCrossing(localContNoMaskCrossing);
+                  }else{
+                    c.resetCount();
+                    cancelCountMaskCrossing();
+                    cancelCountNoMaskCrossing();
+                  }
+
 
                   if ((localContMask!=0 || localContNoMask!=0 ) && ck.getCheckMask()==true){
                     printPercentMask(localContMask/(localContMask+localContNoMask)*100);

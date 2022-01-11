@@ -6,14 +6,16 @@ import java.util.Objects;
 
 public class TrackedObject {
     private String id;
+    private String label;
     private Timestamp timestamp;
     private ArrayList<Point> trackedRecord;
     private int lastUpdateFrameNum;
 
     //COSTRUCTOR
-    public TrackedObject(String id) {
+    public TrackedObject(String id,String label) {
         this.id = id;
         this.updateTimestamp();
+        this.label=label;
         this.lastUpdateFrameNum =0;
         this.trackedRecord = new ArrayList<>();
     }
@@ -26,6 +28,7 @@ public class TrackedObject {
 
     //PUBLIC FUNCTION
     public String getId() { return id; }
+    public String getLabel() { return label; }
     public Timestamp getTimestamp() {
         return timestamp;
     }

@@ -80,8 +80,16 @@ public abstract class CameraActivity extends AppCompatActivity
 
   private CheckDetect ck;
   private TextView contMaskView;
+  private TextView textContMaskView;
   private TextView contNoMaskView;
+  private TextView textContNoMaskView;
   private TextView percentMask;
+  private TextView textPercentMaskView;
+  //TRACKING
+  private TextView countMaskCrossingView;
+  private TextView countNoMaskCrossingView;
+  private TextView textCountMaskCrossingView;
+  private TextView textCountNoMaskCrossingView;
 
   @Override
   protected void onCreate(final Bundle savedInstanceState) {
@@ -102,11 +110,25 @@ public abstract class CameraActivity extends AppCompatActivity
     contMaskView= findViewById(R.id.contMask);
     contNoMaskView= findViewById(R.id.contNoMask);
     percentMask =findViewById(R.id.maskPercent);
+    countMaskCrossingView = findViewById(R.id.countMaskCrossing);
+    countNoMaskCrossingView = findViewById(R.id.countNoMaskCrossing);
+    textCountMaskCrossingView = findViewById(R.id.TextCountMaskCrossing);
+    textCountNoMaskCrossingView = findViewById(R.id.TextCountNoMaskCrossing);
+    textContMaskView= findViewById(R.id.TextContMask);
+    textContNoMaskView=findViewById(R.id.TextContNoMask);
+    textPercentMaskView=findViewById(R.id.TextMaskPercent);
 
     Typeface type = Typeface.createFromAsset(getAssets(),"fonts/BebasNeue-Regular.ttf");
     contMaskView.setTypeface(type);
     contNoMaskView.setTypeface(type);
     percentMask.setTypeface(type);
+    countMaskCrossingView.setTypeface(type);
+    countNoMaskCrossingView.setTypeface(type);
+    textCountMaskCrossingView.setTypeface(type);
+    textCountNoMaskCrossingView.setTypeface(type);
+    textContMaskView.setTypeface(type);
+    textContNoMaskView.setTypeface(type);
+    textPercentMaskView.setTypeface(type);
 
     findViewById(R.id.fatherCamera).setOnTouchListener(new OnSwipeTouchListener(CameraActivity.this) {
       @Override
@@ -462,4 +484,21 @@ public abstract class CameraActivity extends AppCompatActivity
   public void printMaskCount(int count){ contMaskView.setText(String.valueOf(count)); }
   public void printNoMaskCount(int count){ contNoMaskView.setText(String.valueOf(count)); }
   public void printPercentMask(int count){ percentMask.setText(String.valueOf(count)+"%");}
+  public void printCountMaskCrossing(int count){
+    textCountMaskCrossingView.setText("Crossing with mask");
+    countMaskCrossingView.setText(String.valueOf(count));
+  }
+  public void printCountNoMaskCrossing(int count){
+    textCountNoMaskCrossingView.setText("Crossing no mask");
+    countNoMaskCrossingView.setText(String.valueOf(count));
+  }
+  public void cancelCountMaskCrossing(){
+    textCountMaskCrossingView.setText("");
+    countMaskCrossingView.setText("");
+  }
+
+  public void cancelCountNoMaskCrossing(){
+    textCountNoMaskCrossingView.setText("");
+    countNoMaskCrossingView.setText("");
+  }
 }

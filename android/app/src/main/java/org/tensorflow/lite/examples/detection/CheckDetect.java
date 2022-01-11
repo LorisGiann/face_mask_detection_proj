@@ -5,9 +5,11 @@ public class CheckDetect {
     private boolean checkMaskIncorretly;
     private boolean checkMask;
     private boolean checkNoMask;
+    private boolean checkModeTracking;
+    private boolean checkLineTracking;
+    private boolean checkObjectTracking;
     private int contCheckMask;
     private int contCheckNoMask;
-    private int contCheckMaskIncorretly;
 
     private CheckDetect(){
         this.checkMask=true;
@@ -15,7 +17,9 @@ public class CheckDetect {
         this.checkNoMask=true;
         this.contCheckMask=0;
         this.contCheckNoMask=0;
-        this.contCheckMaskIncorretly=0;
+        this.checkModeTracking=false;
+        this.checkLineTracking=false;
+        this.checkObjectTracking=false;
     }
 
     public static CheckDetect getInstance() {
@@ -32,7 +36,13 @@ public class CheckDetect {
     synchronized public void setCheckNoMask(boolean b){
         checkNoMask=b;
     }
+    synchronized public void setCheckModeTracking(boolean b) { checkModeTracking=b; }
+    synchronized public void setCheckLineTracking(boolean b) { checkLineTracking=b; }
+    synchronized public void setCheckObjectTracking(boolean b) { checkObjectTracking=b; }
 
+    synchronized  public boolean getCheckModeTracking() { return checkModeTracking; };
+    synchronized public boolean getCheckLineTracking() { return checkLineTracking; }
+    synchronized public boolean getCheckObjectTracking() { return checkObjectTracking; }
 
     synchronized public boolean getCheckMask(){
         return checkMask;
@@ -56,5 +66,7 @@ public class CheckDetect {
     synchronized public int getContCheckNoMask(){
         return contCheckNoMask;
     }
+
+
 
 }

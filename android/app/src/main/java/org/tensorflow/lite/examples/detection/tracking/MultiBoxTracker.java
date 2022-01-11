@@ -33,6 +33,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
+import org.tensorflow.lite.examples.detection.CheckDetect;
 import org.tensorflow.lite.examples.detection.env.BorderedText;
 import org.tensorflow.lite.examples.detection.env.ImageUtils;
 import org.tensorflow.lite.examples.detection.env.Logger;
@@ -73,14 +74,16 @@ public class MultiBoxTracker {
 
   private Tracking t;
   private Crossing c;
+  private CheckDetect ck;
 
   public MultiBoxTracker(final Context context) {
     for (final int color : COLORS) {
       availableColors.add(color);
     }
 
+    this.ck=CheckDetect.getInstance();
     t=new Tracking();
-    c=new Crossing();
+    c=Crossing.getInstance();
 
     boxPaint.setColor(Color.RED);
     boxPaint.setStyle(Style.STROKE);
@@ -164,28 +167,32 @@ public class MultiBoxTracker {
           canvas, trackedPos.left + cornerSize, trackedPos.top, labelString + "%", boxPaint);
     }
 
-    c.drawCrossingLine(canvas, Color.WHITE);
+    if (ck.getCheckModeTracking()==true && ck.getCheckLineTracking()==true) {
+      c.drawCrossingLine(canvas, Color.WHITE);
+    }
 
     //draw all the tracks of the objects
-    for(TrackedObject trackedObject: t.getTrackedObjects()){
-      List<Point> originalPoints = trackedObject.getPointHistory();
-      List<Point> scaledPoints = new ArrayList<>();
-      for (Point p : originalPoints){
-        float f[] = {p.getCx(), p.getCy()};
-        getFrameToCanvasMatrix().mapPoints(f);
-        scaledPoints.add(new Point(f[0], f[1]));
-      }
-      Paint paint = new Paint();
-      paint.setStrokeWidth(3);
-      paint.setColor(COLORS[Integer.valueOf(trackedObject.getId())%COLORS.length]);
-      for (int i=0; i<scaledPoints.size()-1; i++) {
-        canvas.drawLine(
-                scaledPoints.get(i).getCx(),
-                scaledPoints.get(i).getCy(),
-                scaledPoints.get(i+1).getCx(),
-                scaledPoints.get(i+1).getCy(),
-                paint
+    if (ck.getCheckModeTracking()==true && ck.getCheckObjectTracking()==true) {
+      for (TrackedObject trackedObject : t.getTrackedObjects()) {
+        List<Point> originalPoints = trackedObject.getPointHistory();
+        List<Point> scaledPoints = new ArrayList<>();
+        for (Point p : originalPoints) {
+          float f[] = {p.getCx(), p.getCy()};
+          getFrameToCanvasMatrix().mapPoints(f);
+          scaledPoints.add(new Point(f[0], f[1]));
+        }
+        Paint paint = new Paint();
+        paint.setStrokeWidth(3);
+        paint.setColor(COLORS[Integer.valueOf(trackedObject.getId()) % COLORS.length]);
+        for (int i = 0; i < scaledPoints.size() - 1; i++) {
+          canvas.drawLine(
+                  scaledPoints.get(i).getCx(),
+                  scaledPoints.get(i).getCy(),
+                  scaledPoints.get(i + 1).getCx(),
+                  scaledPoints.get(i + 1).getCy(),
+                  paint
           );
+        }
       }
     }
   }
@@ -194,7 +201,11 @@ public class MultiBoxTracker {
 
     //update
     results = t.update(results);
-    c.update(t.getTrackedObjects(), t.getLastProcessedFrame());
+
+    if (ck.getCheckModeTracking()==true){
+      c.update(t.getTrackedObjects(), t.getLastProcessedFrame());
+    }
+
 
     final List<Pair<Float, Recognition>> rectsToTrack = new LinkedList<Pair<Float, Recognition>>();
 
