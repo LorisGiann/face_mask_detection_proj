@@ -91,6 +91,8 @@ public abstract class CameraActivity extends AppCompatActivity
   private TextView textCountMaskCrossingView;
   private TextView textCountNoMaskCrossingView;
 
+  private ImageView option;
+
   @Override
   protected void onCreate(final Bundle savedInstanceState) {
     LOGGER.d("onCreate " + this);
@@ -129,6 +131,14 @@ public abstract class CameraActivity extends AppCompatActivity
     textContMaskView.setTypeface(type);
     textContNoMaskView.setTypeface(type);
     textPercentMaskView.setTypeface(type);
+
+    option = findViewById(R.id.option_icon);
+    option.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        openActivitySetting();
+      }
+    });
 
     findViewById(R.id.fatherCamera).setOnTouchListener(new OnSwipeTouchListener(CameraActivity.this) {
       @Override

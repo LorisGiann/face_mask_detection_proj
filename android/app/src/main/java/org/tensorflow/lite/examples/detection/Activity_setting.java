@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,6 +22,7 @@ public class Activity_setting extends AppCompatActivity {
     private TextView objectTracking;
 
     private CheckBox checkBoxTrackingMode;
+    private ImageView exitOption;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +52,19 @@ public class Activity_setting extends AppCompatActivity {
         modeTracking.setTypeface(type);
         lineTracking.setTypeface(type);
         objectTracking.setTypeface(type);
+
+        exitOption = findViewById(R.id.option_exit_icon);
+        exitOption.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ck.setCheckMask(((CheckBox) findViewById(R.id.withMaskCheckbox)).isChecked());
+                ck.setCheckNoMask(((CheckBox) findViewById(R.id.withoutMaskCheckbox)).isChecked());
+                ck.setCheckModeTracking(((CheckBox) findViewById(R.id.modeTrackingCheckbox)).isChecked());
+                ck.setCheckLineTracking(((CheckBox) findViewById(R.id.visibilityLine)).isChecked());
+                ck.setCheckObjectTracking(((CheckBox) findViewById(R.id.visibilityTracking)).isChecked());
+                finish();
+            }
+        });
 
         checkBoxTrackingMode = (CheckBox)findViewById(R.id.modeTrackingCheckbox);
         if (checkBoxTrackingMode.isChecked()){

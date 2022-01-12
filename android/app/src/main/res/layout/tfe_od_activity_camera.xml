@@ -38,6 +38,15 @@
         </FrameLayout>
 
         <ImageView
+            android:id="@+id/option_icon"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_alignEnd="@id/container"
+            android:padding="5dp"
+            android:scaleType="centerCrop"
+            android:src="@mipmap/ic_option" />
+
+        <ImageView
             android:id="@+id/send_icon"
             android:layout_width="45dp"
             android:layout_height="45dp"
