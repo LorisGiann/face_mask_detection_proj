@@ -244,7 +244,9 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
                   else printMaskCount(0);
                   if (ck.getCheckNoMask()==true) printNoMaskCount(localContNoMask);
                   else printNoMaskCount(0);
-
+                  if ((localContMask!=0 || localContNoMask!=0 ) && ck.getCheckMask()==true){
+                    printPercentMask((new Double(localContMask))/(new Double(localContMask+localContNoMask))*100);
+                  }
                   //CHECK CHECK BOX CROSSING
                   if (ck.getCheckModeTracking()==true){
                     printCountMaskCrossing(localContMaskCrossing);
@@ -256,10 +258,7 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
                   }
 
 
-                  if ((localContMask!=0 || localContNoMask!=0 ) && ck.getCheckMask()==true){
-                    printPercentMask(localContMask/(localContMask+localContNoMask)*100);
 
-                  }else printPercentMask(0);
                 }
               });
 

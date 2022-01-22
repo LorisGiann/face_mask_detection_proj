@@ -51,6 +51,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import java.nio.ByteBuffer;
+import java.text.DecimalFormat;
+
 import org.tensorflow.lite.examples.detection.env.ImageUtils;
 import org.tensorflow.lite.examples.detection.env.Logger;
 
@@ -493,7 +495,9 @@ public abstract class CameraActivity extends AppCompatActivity
 
   public void printMaskCount(int count){ contMaskView.setText(String.valueOf(count)); }
   public void printNoMaskCount(int count){ contNoMaskView.setText(String.valueOf(count)); }
-  public void printPercentMask(int count){ percentMask.setText(String.valueOf(count)+"%");}
+  public void printPercentMask(double count){
+    DecimalFormat df = new DecimalFormat("###.##");
+    percentMask.setText(String.valueOf(df.format(count))+"%");}
   public void printCountMaskCrossing(int count){
     textCountMaskCrossingView.setText("Crossing with mask");
     countMaskCrossingView.setText(String.valueOf(count));
