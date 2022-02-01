@@ -14,12 +14,12 @@ imgFiles = [f for f in listdir(IMG_FILE_PATH) if isfile(join(IMG_FILE_PATH, f)) 
 def representative_data_gen(): #boh, per qualche motivo manda il convertitore in errore
     a = []
     i = 0
-    for xml_file in glob.glob(IMG_FILE_PATH + '/*.xml'):
+    for imgFile in imgFiles:
         if i>1000:
             break
 
         i+=1
-        img = cv2.imread(imgFiles)
+        img = cv2.imread(IMG_FILE_PATH + '/' + imgFile)
         img = cv2.resize(img, (320, 320))
         img = img / 255.0
         img = img.astype(np.float32)
