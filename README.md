@@ -19,12 +19,13 @@ Project presentation slides: [PresentazioneSistDig.pdf](documents/PresentazioneS
 
 Full report: [relazioneEsameSistemiDigitali.pdf](documents/relazioneEsameSistemiDigitali.pdf)
 
-![before_crossing](https://user-images.githubusercontent.com/42840531/220480114-2aa83b1a-e254-466b-bb28-186a43795bc3.png)
-![after_crossing](https://user-images.githubusercontent.com/42840531/220480139-f82c58cf-b625-4389-9653-d9dd00c06121.png)
-![multiple_people](https://user-images.githubusercontent.com/42840531/220480155-98d1784b-c754-4085-a317-35c096693a98.png)
+![before_crossing](https://user-images.githubusercontent.com/42840531/220483289-9acf5aeb-9791-4aac-bba8-6ca923508229.jpg)
+![after_crossing](https://user-images.githubusercontent.com/42840531/220483306-1260333c-7f76-46e1-a888-686bc3f2a41d.jpg)
+![multiple_people](https://user-images.githubusercontent.com/42840531/220483345-131e5b81-5d8a-412e-8ee9-8a4ee55c50b5.jpg)
 
-![single_passing_with_and_without_mask](https://user-images.githubusercontent.com/42840531/220480746-014c3764-3e37-4a7c-b237-75bb42a96aa4.mp4)
-![multiple_passing_with_and_without_mask](https://user-images.githubusercontent.com/42840531/220480392-1a7d6244-7a6a-4b00-987b-e1690efea9c1.png)
+https://user-images.githubusercontent.com/42840531/220480746-014c3764-3e37-4a7c-b237-75bb42a96aa4.mp4
+https://user-images.githubusercontent.com/42840531/220482039-31768eef-8b49-4887-913e-2c27daa46626.mp4
+
 
 
 
